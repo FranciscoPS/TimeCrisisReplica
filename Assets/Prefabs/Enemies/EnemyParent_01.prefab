@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2627531921739756250}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: PopOutPose
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
@@ -43,6 +43,8 @@ GameObject:
   - component: {fileID: 2577934136553208062}
   - component: {fileID: 6206893321761852833}
   - component: {fileID: 2650280092018638685}
+  - component: {fileID: 3228489469585855658}
+  - component: {fileID: 1155831833944015695}
   m_Layer: 6
   m_Name: Visual
   m_TagString: Untagged
@@ -63,7 +65,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8101665094454830443}
+  m_Father: {fileID: 275983703648697769}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2577934136553208062
 MeshFilter:
@@ -141,46 +143,13 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &6206726892292608790
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8101665094454830443}
-  - component: {fileID: 6846013109367614451}
-  m_Layer: 6
-  m_Name: Enemy_Cyl_01
-  m_TagString: Enemy
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8101665094454830443
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6206726892292608790}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4009840403925347374}
-  m_Father: {fileID: 275983703648697769}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6846013109367614451
+--- !u!114 &3228489469585855658
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6206726892292608790}
+  m_GameObject: {fileID: 3477989804934788114}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c9d8249291b49e40b7c3fa6c26173a7, type: 3}
@@ -216,8 +185,37 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  respectPlayerCover: 1
+  playerTag: Player
+  facePlayerYaw: 1
+  lookPivot: {fileID: 0}
+  yawSpeed: 12
+  shootingEnabled: 0
+  muzzlePoint: {fileID: 0}
+  damagePerShot: 10
+  shootInterval: 0.15
+  maxRange: 200
+  spreadDegrees: 2
   drawGizmos: 1
   poseSnapEpsilon: 0.003
+--- !u!114 &1155831833944015695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3477989804934788114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efca89a8721c73142938471c69c0e257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 1
+  invulnerable: 0
+  rootToDestroy: {fileID: 8637718056762319624}
+  deathDestroyDelay: 0
+  toDisableOnDeath:
+  - {fileID: 3228489469585855658}
 --- !u!1 &8637718056762319624
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,9 +225,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 275983703648697769}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: EnemyParent_01
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -247,9 +245,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8101665094454830443}
   - {fileID: 3973447416398147953}
   - {fileID: 2627531921739756250}
+  - {fileID: 4009840403925347374}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8963331093067930891
@@ -261,7 +259,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3973447416398147953}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: HiddenPose
   m_TagString: Untagged
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}

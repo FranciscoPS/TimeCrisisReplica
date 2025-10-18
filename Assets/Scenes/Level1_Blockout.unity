@@ -137,7 +137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 275983703648697769, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 16.06
+      value: 16.347
       objectReference: {fileID: 0}
     - target: {fileID: 275983703648697769, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -169,15 +169,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2627531921739756250, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.05
+      value: 0.89
       objectReference: {fileID: 0}
     - target: {fileID: 2627531921739756250, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.806
+      value: 0.83
       objectReference: {fileID: 0}
-    - target: {fileID: 3973447416398147953, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.682
+    - target: {fileID: 2627531921739756250, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.24
       objectReference: {fileID: 0}
     - target: {fileID: 8637718056762319624, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
       propertyPath: m_Name
@@ -213,7 +213,7 @@ Transform:
   m_GameObject: {fileID: 123004015}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.41, y: 1.09, z: 3.22}
+  m_LocalPosition: {x: -1.41, y: 1.4, z: 4.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -290,6 +290,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   invulnerable: 0
+  rootToDestroy: {fileID: 0}
+  deathDestroyDelay: 0
+  toDisableOnDeath: []
 --- !u!114 &129852870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -853,7 +856,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.33, y: -0.2, z: 4.79}
-  m_LocalScale: {x: 2, y: 1, z: 2}
+  m_LocalScale: {x: 2, y: 1.136, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1663105042}
@@ -869,7 +872,9 @@ GameObject:
   - component: {fileID: 614867823}
   - component: {fileID: 614867822}
   - component: {fileID: 614867820}
+  - component: {fileID: 614867825}
   - component: {fileID: 614867824}
+  - component: {fileID: 614867826}
   m_Layer: 0
   m_Name: CM Dolly Camera
   m_TagString: Untagged
@@ -926,7 +931,7 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 0}
+    TrackingTarget: {fileID: 1670947337}
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
@@ -981,6 +986,38 @@ MonoBehaviour:
   focusExposed: {fileID: 1670947337}
   focusCover: {fileID: 123004016}
   logSwitches: 1
+--- !u!114 &614867825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 614867819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d70cc20219cd84593f67d248eafe36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: 0, y: 0, z: 0}
+  ApplyAfter: 3
+  PreserveComposition: 0
+--- !u!114 &614867826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 614867819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e12ea0fbf7770f4293656ad035329de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 129852870}
+  camOffset: {fileID: 614867825}
+  exposedY: 0
+  coverY: -0.2
+  lerpSpeed: 10
 --- !u!1 &691070061
 GameObject:
   m_ObjectHideFlags: 0
@@ -2137,6 +2174,18 @@ PrefabInstance:
     - target: {fileID: 275983703648697769, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3477989804934788114, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6206726892292608790, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6206726892292608790, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8637718056762319624, guid: 99dd1f70c6ed0894ca46683bdc847ff5, type: 3}
       propertyPath: m_Name
