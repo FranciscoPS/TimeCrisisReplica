@@ -1,34 +1,43 @@
 using UnityEngine;
 
-/// Enemigo "popper" básico: alterna entre HiddenPose y PopOutPose con tiempos aleatorios.
-/// - Sin animaciones ni IA del jugador.
-/// - Útil para pruebas de disparo: se asoma por un tiempo y se cubre.
-/// - Usa un tween simple (Lerp + AnimationCurve).
 [DisallowMultipleComponent]
 public class EnemyPopper : MonoBehaviour
 {
     public enum State { Hidden, MovingToPop, Exposed, MovingToHidden }
 
-    [Header("Poses (asigna en la escena)")]
+    [Header("Poses (asigna en escena)")]
     public Transform hiddenPose;     // Dónde se oculta
-    public Transform popOutPose;     // Dónde se asoma (visible/disparable)
+    public Transform popOutPose;     // Dónde se asoma
 
     [Header("Tiempos aleatorios (segundos)")]
-    [Tooltip("Rango de espera mientras está cubierto antes de asomarse")]
     public Vector2 coverWaitRange = new Vector2(0.7f, 1.2f);
-
-    [Tooltip("Rango de tiempo visible antes de volver a cubrirse")]
     public Vector2 exposeWaitRange = new Vector2(0.6f, 1.0f);
 
     [Header("Duración del movimiento (segundos)")]
-    [Tooltip("Tiempo del tween al asomarse")]
     public float popOutMoveTime = 0.22f;
-
-    [Tooltip("Tiempo del tween al cubrirse")]
     public float hideMoveTime   = 0.22f;
 
     [Header("Tween")]
     public AnimationCurve moveCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+    [Header("Opcional: respetar cover del jugador")]
+    public bool respectPlayerCover = true;       // si true, solo se asoma si el jugador está expuesto
+    public string playerTag = "Player";
+    private PlayerShooter _playerShooter;
+    private Transform _playerTr;
+
+    [Header("Opcional: mirar al jugador (solo yaw)")]
+    public bool facePlayerYaw = true;
+    public Transform lookPivot;                  // si null, usa transform
+    public float yawSpeed = 12f;
+
+    [Header("Opcional: disparo simple mientras está expuesto")]
+    public bool shootingEnabled = false;
+    public Transform muzzlePoint;
+    public float damagePerShot = 10f;
+    public float shootInterval = 0.15f;         // cadencia durante el estado Exposed
+    public float maxRange = 200f;
+    public float spreadDegrees = 2.0f;
 
     [Header("Debug")]
     public bool drawGizmos = true;
@@ -39,15 +48,24 @@ public class EnemyPopper : MonoBehaviour
     private float _timer;
     private Coroutine _moveCR;
     private bool _moving;
+    private float _shootTimer;
 
     void Start()
     {
-        // Validar referencias
         if (!hiddenPose || !popOutPose)
         {
             Debug.LogError($"[EnemyPopper] {name}: Asigna hiddenPose y popOutPose.");
             enabled = false;
             return;
+        }
+
+        if (!lookPivot) lookPivot = transform;
+
+        var pGo = GameObject.FindGameObjectWithTag(playerTag);
+        if (pGo)
+        {
+            _playerTr = pGo.transform;
+            _playerShooter = pGo.GetComponent<PlayerShooter>();
         }
 
         // Estado inicial: oculto y clavado en hidden
@@ -63,14 +81,36 @@ public class EnemyPopper : MonoBehaviour
                 _timer -= Time.deltaTime;
                 if (_timer <= 0f && !_moving)
                 {
-                    StartMove(hiddenPose, popOutPose, popOutMoveTime, State.MovingToPop, () =>
+                    if (!respectPlayerCover || IsPlayerExposed())
                     {
-                        SetState(State.Exposed, RandomRange(exposeWaitRange));
-                    });
+                        StartMove(hiddenPose, popOutPose, popOutMoveTime, State.MovingToPop, () =>
+                        {
+                            _shootTimer = 0f; // reset cadencia
+                            SetState(State.Exposed, RandomRange(exposeWaitRange));
+                        });
+                    }
+                    else
+                    {
+                        _timer = 0.25f; // reintenta pronto
+                    }
                 }
                 break;
 
             case State.Exposed:
+                // mirar al player (opc)
+                if (facePlayerYaw) FacePlayerYaw();
+
+                // disparo simple (opc)
+                if (shootingEnabled)
+                {
+                    _shootTimer -= Time.deltaTime;
+                    if (_shootTimer <= 0f)
+                    {
+                        _shootTimer = shootInterval;
+                        FireOneShot();
+                    }
+                }
+
                 _timer -= Time.deltaTime;
                 if (_timer <= 0f && !_moving)
                 {
@@ -84,12 +124,12 @@ public class EnemyPopper : MonoBehaviour
             case State.MovingToPop:
             case State.MovingToHidden:
                 // lo maneja la coroutine
+                // (puedes seguir haciendo face yaw aquí si te gusta, pero no es necesario)
                 break;
         }
     }
 
-    // ---------------- helpers FSM ----------------
-
+    // ---------- helpers FSM ----------
     private void SetState(State s, float wait)
     {
         _state = s;
@@ -102,8 +142,7 @@ public class EnemyPopper : MonoBehaviour
         return Random.Range(Mathf.Min(range.x, range.y), Mathf.Max(range.x, range.y));
     }
 
-    // ---------------- Tween seguro ----------------
-
+    // ---------- Tween seguro ----------
     private void StartMove(Transform from, Transform to, float duration, State movingState, System.Action onComplete)
     {
         if (_moving) return;
@@ -136,6 +175,9 @@ public class EnemyPopper : MonoBehaviour
             transform.position = Vector3.Lerp(startPos, endPos, eval);
             transform.rotation = Quaternion.Slerp(startRot, endRot, eval);
 
+            // (Opcional) yaw durante el movimiento:
+            if (facePlayerYaw) FacePlayerYaw();
+
             yield return null;
         }
 
@@ -156,7 +198,49 @@ public class EnemyPopper : MonoBehaviour
                Quaternion.Angle(transform.rotation, pose.rotation) <= 0.25f;
     }
 
-    // ---------------- Gizmos ----------------
+    // ---------- Opcionales ----------
+    private bool IsPlayerExposed()
+    {
+        if (_playerShooter == null) return true; // si no hay referencia, asumimos expuesto
+        return _playerShooter.IsExposed;
+    }
+
+    private void FacePlayerYaw()
+    {
+        if (_playerTr == null || lookPivot == null) return;
+
+        Vector3 toPlayer = _playerTr.position - lookPivot.position;
+        toPlayer.y = 0f;
+        if (toPlayer.sqrMagnitude < 0.0001f) return;
+
+        Quaternion target = Quaternion.LookRotation(toPlayer.normalized, Vector3.up);
+        lookPivot.rotation = Quaternion.Slerp(lookPivot.rotation, target, Time.deltaTime * yawSpeed);
+    }
+
+    private void FireOneShot()
+    {
+        if (!muzzlePoint || !Camera.main) return;
+
+        Vector3 dir = (Camera.main.transform.position - muzzlePoint.position).normalized;
+        dir = Quaternion.Euler(
+            Random.Range(-spreadDegrees, spreadDegrees),
+            Random.Range(-spreadDegrees, spreadDegrees),
+            0f) * dir;
+
+        Ray ray = new Ray(muzzlePoint.position, dir);
+        if (Physics.Raycast(ray, out RaycastHit hit, maxRange, ~0))
+        {
+            if (hit.collider.CompareTag("Player") &&
+                hit.collider.TryGetComponent<IDamageable>(out var dmg))
+            {
+                dmg.TakeDamage(damagePerShot, hit.point, hit.normal);
+                // Debug.Log($"[EnemyPopper] {name} hit Player ({damagePerShot}).");
+            }
+        }
+        // else // miss
+    }
+
+    // ---------- Gizmos ----------
     private void OnDrawGizmos()
     {
         if (!drawGizmos) return;
