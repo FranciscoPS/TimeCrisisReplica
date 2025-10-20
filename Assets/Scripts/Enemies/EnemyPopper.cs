@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Animations;
 
 [DisallowMultipleComponent]
 public class EnemyPopper : MonoBehaviour
@@ -38,6 +39,9 @@ public class EnemyPopper : MonoBehaviour
     public float shootInterval = 0.15f;         // cadencia durante el estado Exposed
     public float maxRange = 200f;
     public float spreadDegrees = 2.0f;
+    public Animator animator;
+
+    
 
     [Header("Debug")]
     public bool drawGizmos = true;
@@ -87,6 +91,7 @@ public class EnemyPopper : MonoBehaviour
                         {
                             _shootTimer = 0f; // reset cadencia
                             SetState(State.Exposed, RandomRange(exposeWaitRange));
+                            
                         });
                     }
                     else
@@ -99,13 +104,14 @@ public class EnemyPopper : MonoBehaviour
             case State.Exposed:
                 // mirar al player (opc)
                 if (facePlayerYaw) FacePlayerYaw();
-
+                
                 // disparo simple (opc)
                 if (shootingEnabled)
                 {
                     _shootTimer -= Time.deltaTime;
                     if (_shootTimer <= 0f)
                     {
+                        animator.SetTrigger("SHOOT");
                         _shootTimer = shootInterval;
                         FireOneShot();
                     }
@@ -219,6 +225,7 @@ public class EnemyPopper : MonoBehaviour
 
     private void FireOneShot()
     {
+  
         if (!muzzlePoint || !Camera.main) return;
 
         Vector3 dir = (Camera.main.transform.position - muzzlePoint.position).normalized;
