@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Animations;
 
 [DisallowMultipleComponent]
 public class EnemyPopper : MonoBehaviour
@@ -38,6 +39,9 @@ public class EnemyPopper : MonoBehaviour
     public float shootInterval = 0.15f;         // cadencia durante el estado Exposed
     public float maxRange = 200f;
     public float spreadDegrees = 2.0f;
+    public Animator animator;
+
+    
 
     [Header("Debug")]
     public bool drawGizmos = true;
@@ -106,6 +110,7 @@ public class EnemyPopper : MonoBehaviour
                     _shootTimer -= Time.deltaTime;
                     if (_shootTimer <= 0f)
                     {
+                        
                         _shootTimer = shootInterval;
                         FireOneShot();
                     }
@@ -219,6 +224,7 @@ public class EnemyPopper : MonoBehaviour
 
     private void FireOneShot()
     {
+        
         if (!muzzlePoint || !Camera.main) return;
 
         Vector3 dir = (Camera.main.transform.position - muzzlePoint.position).normalized;
@@ -226,6 +232,7 @@ public class EnemyPopper : MonoBehaviour
             Random.Range(-spreadDegrees, spreadDegrees),
             Random.Range(-spreadDegrees, spreadDegrees),
             0f) * dir;
+        animator?.SetTrigger("SHOOT");
 
         Ray ray = new Ray(muzzlePoint.position, dir);
         if (Physics.Raycast(ray, out RaycastHit hit, maxRange, ~0))
