@@ -218,6 +218,7 @@ MonoBehaviour:
   deathDestroyDelay: 0
   toDisableOnDeath:
   - {fileID: 3228489469585855658}
+  animator: {fileID: 1590290525651485449}
 --- !u!1 &4780561731289273887
 GameObject:
   m_ObjectHideFlags: 0

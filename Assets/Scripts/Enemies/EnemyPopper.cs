@@ -91,6 +91,7 @@ public class EnemyPopper : MonoBehaviour
                         {
                             _shootTimer = 0f; // reset cadencia
                             SetState(State.Exposed, RandomRange(exposeWaitRange));
+                            
                         });
                     }
                     else
@@ -103,14 +104,14 @@ public class EnemyPopper : MonoBehaviour
             case State.Exposed:
                 // mirar al player (opc)
                 if (facePlayerYaw) FacePlayerYaw();
-
+                
                 // disparo simple (opc)
                 if (shootingEnabled)
                 {
                     _shootTimer -= Time.deltaTime;
                     if (_shootTimer <= 0f)
                     {
-                        
+                        animator.SetTrigger("SHOOT");
                         _shootTimer = shootInterval;
                         FireOneShot();
                     }
@@ -224,7 +225,7 @@ public class EnemyPopper : MonoBehaviour
 
     private void FireOneShot()
     {
-        
+  
         if (!muzzlePoint || !Camera.main) return;
 
         Vector3 dir = (Camera.main.transform.position - muzzlePoint.position).normalized;
@@ -232,7 +233,6 @@ public class EnemyPopper : MonoBehaviour
             Random.Range(-spreadDegrees, spreadDegrees),
             Random.Range(-spreadDegrees, spreadDegrees),
             0f) * dir;
-        animator?.SetTrigger("SHOOT");
 
         Ray ray = new Ray(muzzlePoint.position, dir);
         if (Physics.Raycast(ray, out RaycastHit hit, maxRange, ~0))

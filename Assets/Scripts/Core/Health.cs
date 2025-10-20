@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using UnityEngine.Animations;
 
 [DisallowMultipleComponent]
 public class Health : MonoBehaviour, IDamageable
@@ -15,6 +16,8 @@ public class Health : MonoBehaviour, IDamageable
     public float deathDestroyDelay = 0f;
     [Tooltip("Scripts a deshabilitar al morir (opcional).")]
     public MonoBehaviour[] toDisableOnDeath; // Ej: EnemyPopper
+
+    public Animator animator;
 
     public Action OnDeath;
     public Action<float> OnDamage;
@@ -44,6 +47,7 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        animator.SetBool("DEATH", true);
         // 1) deshabilitar lógica (opcional)
         if (toDisableOnDeath != null)
         {
