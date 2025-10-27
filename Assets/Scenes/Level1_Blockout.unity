@@ -1914,8 +1914,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 129852870}
   camOffset: {fileID: 614867825}
-  exposedY: 0
-  coverY: -0.2
+  exposedY: 0.5
+  coverY: -1
   lerpSpeed: 10
 --- !u!1 &709070961
 GameObject:
