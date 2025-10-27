@@ -4,7 +4,8 @@ public class Barrel : MonoBehaviour
 {
     public ParticleSystem Explosion;
     public GameObject Bar;
-    public void OnTriggerEnter(Collider other)
+
+    public void DestroyBarrel()
     {
         Explosion.Play();
         Destroy(Bar);

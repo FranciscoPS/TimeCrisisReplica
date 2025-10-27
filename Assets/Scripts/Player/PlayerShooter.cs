@@ -195,6 +195,12 @@ public class PlayerShooter : MonoBehaviour
                 dmg.TakeDamage(damagePerShot, hit.point, hit.normal);
                 Debug.Log($"[PlayerShooter] Damage {damagePerShot} aplicado.");
             }
+
+            if (hit.collider.TryGetComponent<Barrel>(out var barrel))
+            {
+                barrel.DestroyBarrel();
+                Debug.Log("[PlayerShooter] Barrel hit and destroyed.");
+            }
         }
         else
         {
