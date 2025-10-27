@@ -168,10 +168,10 @@ PrefabInstance:
       addedObject: {fileID: 4951462100951060146}
     - targetCorrespondingSourceObject: {fileID: 193908, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5216444806385479202}
+      addedObject: {fileID: 7461464567852715109}
     - targetCorrespondingSourceObject: {fileID: 193908, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7461464567852715109}
+      addedObject: {fileID: 3008830494438564913}
   m_SourcePrefab: {fileID: 100100000, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
 --- !u!1 &27124781569193156 stripped
 GameObject:
@@ -201,7 +201,7 @@ CapsuleCollider:
   m_Height: 2.21
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &5216444806385479202
+--- !u!114 &7461464567852715109
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -210,7 +210,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 27124781569193156}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17ba8f69832997d4da5d519d3a900ba4, type: 3}
+  m_Script: {fileID: 11500000, guid: efca89a8721c73142938471c69c0e257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  invulnerable: 0
+  rootToDestroy: {fileID: 1498521646580421538}
+  deathDestroyDelay: 3
+  toDisableOnDeath: []
+  animator: {fileID: 0}
+--- !u!114 &3008830494438564913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27124781569193156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c9d8249291b49e40b7c3fa6c26173a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hiddenPose: {fileID: 7123826473256253146}
@@ -248,30 +266,23 @@ MonoBehaviour:
   facePlayerYaw: 1
   lookPivot: {fileID: 0}
   yawSpeed: 12
-  animator: {fileID: 0}
+  shootingEnabled: 0
+  muzzlePoint: {fileID: 0}
+  damagePerShot: 10
+  shootInterval: 0.15
+  maxRange: 200
+  spreadDegrees: 2
+  animator: {fileID: 27124781578529380}
   drawGizmos: 1
   poseSnapEpsilon: 0.003
---- !u!114 &7461464567852715109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 27124781569193156}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efca89a8721c73142938471c69c0e257, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  invulnerable: 0
-  rootToDestroy: {fileID: 1498521646580421538}
-  deathDestroyDelay: 3
-  toDisableOnDeath: []
-  animator: {fileID: 0}
 --- !u!4 &27124781569459550 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 427246, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
+  m_PrefabInstance: {fileID: 27124781569032624}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &27124781578529380 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9530324, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
   m_PrefabInstance: {fileID: 27124781569032624}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8157426374313347120
@@ -296,7 +307,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e02c65869df378848b5ab5ccdbf498db, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.201
+      value: -0.297
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e02c65869df378848b5ab5ccdbf498db, type: 3}
       propertyPath: m_LocalPosition.y
