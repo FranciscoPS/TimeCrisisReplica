@@ -13,7 +13,7 @@ public class Health : MonoBehaviour, IDamageable
     [Tooltip("Qué objeto destruir al morir (si es null, se destruye este mismo GO).")]
     public GameObject rootToDestroy;         // ← arrastra aquí EnemyParent
     [Tooltip("Retraso (s) antes de destruir rootToDestroy.")]
-    public float deathDestroyDelay = 0f;
+    public float deathDestroyDelay = 3f;
     [Tooltip("Scripts a deshabilitar al morir (opcional).")]
     public MonoBehaviour[] toDisableOnDeath; // Ej: EnemyPopper
 
@@ -47,7 +47,7 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Die()
     {
-        animator.SetBool("DEATH", true);
+        animator.SetTrigger("DEATH");
         // 1) deshabilitar lógica (opcional)
         if (toDisableOnDeath != null)
         {
