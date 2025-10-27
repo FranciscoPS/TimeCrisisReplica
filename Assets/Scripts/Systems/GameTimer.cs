@@ -4,6 +4,7 @@ public class GameTimer : MonoBehaviour
 {
     [Tooltip("Segundos iniciales de la partida")]
     public float startSeconds = 120f; // 2:00
+
     [Tooltip("Segundos a sumar por enemigo eliminado")]
     public float bonusPerKill = 20f;
 
@@ -24,9 +25,11 @@ public class GameTimer : MonoBehaviour
 
     void Update()
     {
-        if (!running) return;
+        if (!running)
+            return;
         _timeLeft -= Time.deltaTime;
-        if (_timeLeft < 0f) _timeLeft = 0f;
+        if (_timeLeft < 0f)
+            _timeLeft = 0f;
         GameEvents.TimerChanged?.Invoke(_timeLeft);
 
         if (_timeLeft <= 0f)
@@ -38,7 +41,8 @@ public class GameTimer : MonoBehaviour
 
     void OnEnemyKilled()
     {
-        if (!running) return;
+        if (!running)
+            return;
         _timeLeft += bonusPerKill;
         GameEvents.TimerChanged?.Invoke(_timeLeft);
     }
