@@ -49,11 +49,14 @@ public class PlayerShooter : MonoBehaviour
         _health = GetComponent<Health>();
         _currentAmmo = magazineSize;
 
+        _inputs = new InputSystem_Actions();
+    }
+
+    void Start()
+    {
+        // Inicializar UI después de que todos los sistemas estén listos
         GameEvents.AmmoChanged?.Invoke(_currentAmmo, magazineSize);
         GameEvents.ReloadAlert?.Invoke(false);
-
-        _inputs = new InputSystem_Actions(); // requiere que hayas hecho Generate C# Class
-        Debug.Log("[PlayerShooter] InputSystem_Actions creado.");
     }
 
     void OnEnable()
