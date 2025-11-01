@@ -52,7 +52,10 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Die()
     {
-        animator.SetTrigger("DEATH");
+        // Disparar animación de muerte solo si hay animator asignado
+        if (animator)
+            animator.SetTrigger("DEATH");
+        
         // 1) deshabilitar lógica (opcional)
         if (toDisableOnDeath != null)
         {
