@@ -95,7 +95,7 @@ public class ZoneFlowController : MonoBehaviour
         int next = idx + 1;
         if (next >= zones.Count)
         {
-            Debug.Log("[ZoneFlow] Última zona limpia. Fin del riel.");
+            Debug.Log("[ZoneFlow] ¡Todas las zonas completadas!");
             return;
         }
 
@@ -181,9 +181,7 @@ public class ZoneFlowController : MonoBehaviour
         var currentZone = zones[_current];
         if (currentZone != null)
         {
-            Debug.Log($"[ZoneFlow] Updating focus targets for {currentZone.zoneName}");
-            Debug.Log($"[ZoneFlow] - Exposed: {currentZone.focusExposed?.name} (Active: {currentZone.focusExposed?.gameObject.activeInHierarchy})");
-            Debug.Log($"[ZoneFlow] - Cover: {currentZone.focusCover?.name} (Active: {currentZone.focusCover?.gameObject.activeInHierarchy})");
+
             
             // Actualizar los targets exposed/cover con los de la zona actual
             focusTargetSwitcher.SetTargets(currentZone.focusExposed, currentZone.focusCover);

@@ -15,12 +15,7 @@ public class PlayerHealthBridge : MonoBehaviour
     void Start()
     {
         // Ahora Health ya ejecutó su Awake(), _current está inicializado
-        Debug.Log(
-            "PlayerHealthBridge: maxHealth = "
-                + _health.maxHealth
-                + ", current = "
-                + _health.Current
-        );
+        Debug.Log($"[VIDA] Jugador iniciado: {_health.Current}/{_health.maxHealth} HP");
         GameEvents.PlayerHealthChanged?.Invoke(_health.Current, _health.maxHealth);
     }
 

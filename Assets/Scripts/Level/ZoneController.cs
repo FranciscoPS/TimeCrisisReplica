@@ -41,7 +41,7 @@ public class ZoneController : MonoBehaviour
                 h.OnDeath += HandleEnemyDeath;
             }
         }
-        Debug.Log($"[Zone] {zoneName} ACTIVADA. Enemigos: {_alive}");
+        Debug.Log($"[Zone] {zoneName} activada - Enemigos: {_alive}");
     }
 
     public void Deactivate()
@@ -63,7 +63,7 @@ public class ZoneController : MonoBehaviour
         _alive = Mathf.Max(0, _alive - 1);
         if (_alive == 0)
         {
-            Debug.Log($"[Zone] {zoneName} LIMPIADA.");
+            Debug.Log($"[Zone] {zoneName} COMPLETADA");
             var flow = FindAnyObjectByType<ZoneFlowController>();
             flow?.OnZoneCleared(this);
         }

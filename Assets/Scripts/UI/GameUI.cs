@@ -89,7 +89,7 @@ public class GameUI : MonoBehaviour
         int activeLives = Mathf.CeilToInt(current / healthPerSegment);
         activeLives = Mathf.Clamp(activeLives, 0, segments);
 
-        Debug.Log($"[GameUI] Vida: {current}/{max} -> {activeLives}/{segments} vidas");
+        Debug.Log($"[VIDA] {activeLives}/{segments} vidas restantes");
 
         for (int i = 0; i < segments; i++)
             _healthIcons[i].color = (i < activeLives) ? Color.white : new Color(1,1,1,0.2f);

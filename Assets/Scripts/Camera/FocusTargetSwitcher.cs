@@ -110,7 +110,7 @@ public class FocusTargetSwitcher : MonoBehaviour
         _isOverridden = false;
         _overrideTarget = null;
         
-        Debug.Log($"[FocusTargetSwitcher] Override cleared, current state: Cover={player?.isInCover}");
+
         
         // FORZAR actualización inmediata con los targets actuales
         if (player != null && vcam != null)

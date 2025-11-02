@@ -62,7 +62,6 @@ public class PlayerShooter : MonoBehaviour
     void OnEnable()
     {
         _inputs.Enable();
-        Debug.Log("[PlayerShooter] _inputs.Enable()");
 
         // Busca acciones por rutas comunes (ajusta si tus nombres difieren)
         _actFire = FindActionFlexible("Gameplay/Fire", "Player/Fire", "Fire", "Combat/Fire");
@@ -82,20 +81,17 @@ public class PlayerShooter : MonoBehaviour
         {
             _actFire.performed += OnFirePerformed;
             _actFire.Enable();
-            Debug.Log("[PlayerShooter] Subscribed to Fire.performed");
         }
         if (_actCover != null)
         {
             _actCover.performed += OnCoverPerformed;
             _actCover.canceled += OnCoverCanceled;
             _actCover.Enable();
-            Debug.Log("[PlayerShooter] Subscribed to Cover.performed/canceled");
         }
         if (_actReload != null)
         {
             _actReload.performed += OnReloadPerformed;
             _actReload.Enable();
-            Debug.Log("[PlayerShooter] Subscribed to Reload.performed");
         }
 
         // Si algo no se enlazó, lista mapas/acciones para que copies el nombre exacto
@@ -121,20 +117,17 @@ public class PlayerShooter : MonoBehaviour
         {
             _actFire.performed -= OnFirePerformed;
             _actFire.Disable();
-            Debug.Log("[PlayerShooter] Unsubscribed Fire");
         }
         if (_actCover != null)
         {
             _actCover.performed -= OnCoverPerformed;
             _actCover.canceled -= OnCoverCanceled;
             _actCover.Disable();
-            Debug.Log("[PlayerShooter] Unsubscribed Cover");
         }
         if (_actReload != null)
         {
             _actReload.performed -= OnReloadPerformed;
             _actReload.Disable();
-            Debug.Log("[PlayerShooter] Unsubscribed Reload");
         }
 
         GameEvents.GameOver -= OnGameOver;
@@ -145,7 +138,7 @@ public class PlayerShooter : MonoBehaviour
         _isGameOver = true;
         if (_inputs != null)
             _inputs.Disable();
-        Debug.Log("[PlayerShooter] GAME OVER → inputs deshabilitados");
+        Debug.Log("[PlayerShooter] GAME OVER");
     }
 
     // ───────────── Input callbacks ─────────────
@@ -158,19 +151,16 @@ public class PlayerShooter : MonoBehaviour
 
     private void OnCoverPerformed(InputAction.CallbackContext ctx)
     {
-        Debug.Log("[PlayerShooter] Cover.performed (DOWN)");
         SetCover(true);
     }
 
     private void OnCoverCanceled(InputAction.CallbackContext ctx)
     {
-        Debug.Log("[PlayerShooter] Cover.canceled (UP)");
         SetCover(false);
     }
 
     private void OnReloadPerformed(InputAction.CallbackContext ctx)
     {
-        Debug.Log("[PlayerShooter] Reload.performed");
         if (!_isReloading && _currentAmmo < magazineSize)
             StartCoroutine(ReloadRoutine());
     }
@@ -186,11 +176,9 @@ public class PlayerShooter : MonoBehaviour
         isInCover = cover;
         if (_health)
             _health.invulnerable = isInCover;
-        Debug.Log($"[PlayerShooter] COVER = {isInCover}");
 
         if (isInCover && _currentAmmo < magazineSize && !_isReloading)
         {
-            Debug.Log("[PlayerShooter] Recarga automática al entrar en cover.");
             StartCoroutine(ReloadRoutine());
         }
     }
@@ -199,17 +187,15 @@ public class PlayerShooter : MonoBehaviour
     {
         if (isInCover || _isReloading)
         {
-            Debug.Log("[PlayerShooter] No dispara (cover o reloading).");
             return;
         }
         if (Time.time < _nextShootTime)
         {
-            Debug.Log("[PlayerShooter] Rate limit.");
             return;
         }
         if (_currentAmmo <= 0)
         {
-            Debug.Log("[PlayerShooter] Sin balas.");
+            Debug.Log("[PlayerShooter] Sin balas - Recarga necesaria");
             return;
         }
 
@@ -219,7 +205,6 @@ public class PlayerShooter : MonoBehaviour
         if (_currentAmmo <= 0)
         {
             GameEvents.ReloadAlert?.Invoke(true);
-            Debug.Log("[PlayerShooter] Sin balas.");
             return;
         }
 
@@ -240,18 +225,17 @@ public class PlayerShooter : MonoBehaviour
             if (hit.collider.TryGetComponent<IDamageable>(out var dmg))
             {
                 dmg.TakeDamage(damagePerShot, hit.point, hit.normal);
-                Debug.Log($"[PlayerShooter] Damage {damagePerShot} aplicado.");
+                Debug.Log($"[PlayerShooter] HIT: {hit.collider.name} - Daño: {damagePerShot}");
             }
 
             if (hit.collider.TryGetComponent<Barrel>(out var barrel))
             {
                 barrel.DestroyBarrel();
-                Debug.Log("[PlayerShooter] Barrel hit and destroyed.");
+                Debug.Log("[PlayerShooter] Barrel destruido");
             }
         }
         else
         {
-            Debug.Log("[PlayerShooter] Miss.");
             // Tracer en Game view (hasta alcance máximo)
             if (drawTracerInGame)
                 DrawTracer(ray.origin, ray.origin + ray.direction * maxRange, tracerColorMiss);
@@ -263,13 +247,13 @@ public class PlayerShooter : MonoBehaviour
         _isReloading = true;
         GameEvents.ReloadAlert?.Invoke(true);
 
-        Debug.Log("[PlayerShooter] Reload start...");
+        Debug.Log("[PlayerShooter] Recargando...");
         yield return new WaitForSeconds(reloadTime);
         _currentAmmo = magazineSize;
         _isReloading = false;
         GameEvents.AmmoChanged?.Invoke(_currentAmmo, magazineSize);
         GameEvents.ReloadAlert?.Invoke(false);
-        Debug.Log("[PlayerShooter] Reload done.");
+        Debug.Log("[PlayerShooter] Recarga completa");
     }
 
     // Expuesto para que la IA sepa si puede dispararte
