@@ -111,7 +111,8 @@ public class EnemyPopper : MonoBehaviour
                     _shootTimer -= Time.deltaTime;
                     if (_shootTimer <= 0f)
                     {
-                        animator.SetTrigger("SHOOT");
+                        // Disparar sin animación requerida
+                        if (animator) animator.SetTrigger("SHOOT");
                         _shootTimer = shootInterval;
                         FireOneShot();
                     }

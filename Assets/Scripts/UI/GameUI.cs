@@ -79,17 +79,20 @@ public class GameUI : MonoBehaviour
     }
     void OnHealthChanged(float current, float max)
     {
-        int segments = _healthSegments > 0 ? _healthSegments : 5; // por defecto 5
+        int segments = _healthSegments > 0 ? _healthSegments : 8; // por defecto 8 vidas
         if (_healthSegments == 0) _healthSegments = segments;
 
         EnsureHealthIcons(segments);
 
-        float per = Mathf.Approximately(max, 0f) ? 0f : current / max;
-        int active = Mathf.RoundToInt(per * segments);
-        active = Mathf.Clamp(active, 0, segments);
+        // Calcular vidas restantes (cada vida = max/segments puntos de salud)
+        float healthPerSegment = max / segments;
+        int activeLives = Mathf.CeilToInt(current / healthPerSegment);
+        activeLives = Mathf.Clamp(activeLives, 0, segments);
+
+        Debug.Log($"[GameUI] Vida: {current}/{max} -> {activeLives}/{segments} vidas");
 
         for (int i = 0; i < segments; i++)
-            _healthIcons[i].color = (i < active) ? Color.white : new Color(1,1,1,0.2f);
+            _healthIcons[i].color = (i < activeLives) ? Color.white : new Color(1,1,1,0.2f);
     }
 
     // Puedes establecerlo desde el Player al iniciar si quieres 3/5/10 segmentos exactos

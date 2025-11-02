@@ -192,13 +192,13 @@ MonoBehaviour:
   facePlayerYaw: 1
   lookPivot: {fileID: 0}
   yawSpeed: 12
-  shootingEnabled: 0
+  shootingEnabled: 1
   muzzlePoint: {fileID: 4597421591752489488}
-  damagePerShot: 10
-  shootInterval: 0.15
+  damagePerShot: 1
+  shootInterval: 1.5
   maxRange: 200
   spreadDegrees: 2
-  animator: {fileID: 1590290525651485449}
+  animator: {fileID: 0}
   drawGizmos: 1
   poseSnapEpsilon: 0.003
 --- !u!114 &1155831833944015695

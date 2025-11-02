@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 public class PlayerHealthBridge : MonoBehaviour
 {
-    public int uiHealthSegments = 5; // cuántos íconos quieres en UI
+    public int uiHealthSegments = 8; // cuántos íconos quieres en UI
 
     private Health _health;
 
