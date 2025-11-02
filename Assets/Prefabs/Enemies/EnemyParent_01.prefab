@@ -198,7 +198,7 @@ MonoBehaviour:
   shootInterval: 1.5
   maxRange: 200
   spreadDegrees: 2
-  accuracy: 0.709
+  accuracy: 0.5
   animator: {fileID: 0}
   drawGizmos: 1
   poseSnapEpsilon: 0.003

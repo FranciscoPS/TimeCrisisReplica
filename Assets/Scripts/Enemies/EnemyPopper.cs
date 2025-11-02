@@ -278,8 +278,16 @@ public class EnemyPopper : MonoBehaviour
             if (hit.collider.CompareTag("Player") &&
                 hit.collider.TryGetComponent<IDamageable>(out var dmg))
             {
-                dmg.TakeDamage(damagePerShot, hit.point, hit.normal);
-                Debug.Log($"[EnemyPopper] {name} HIT Player! Daño: {damagePerShot}");
+                // AQUÍ aplicamos el accuracy - solo hace daño si willHit es true
+                if (willHit)
+                {
+                    dmg.TakeDamage(damagePerShot, hit.point, hit.normal);
+                    Debug.Log($"[EnemyPopper] {name} HIT Player! Daño: {damagePerShot} (Accuracy success)");
+                }
+                else
+                {
+                    Debug.Log($"[EnemyPopper] {name} impactó Player pero FALLÓ por accuracy ({accuracy})");
+                }
             }
             else
             {
