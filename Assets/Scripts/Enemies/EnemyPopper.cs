@@ -39,6 +39,12 @@ public class EnemyPopper : MonoBehaviour
     public float shootInterval = 0.15f;         // cadencia durante el estado Exposed
     public float maxRange = 200f;
     public float spreadDegrees = 2.0f;
+    
+    [Header("Precisión del disparo")]
+    [Range(0f, 1f)]
+    [Tooltip("Probabilidad de que el disparo acierte (0.0 = nunca, 1.0 = siempre)")]
+    public float accuracy = 0.7f; // 70% de probabilidad de dar
+    
     public Animator animator;
 
     
@@ -226,26 +232,64 @@ public class EnemyPopper : MonoBehaviour
 
     private void FireOneShot()
     {
-  
-        if (!muzzlePoint || !Camera.main) return;
+        if (!muzzlePoint) return;
 
-        Vector3 dir = (Camera.main.transform.position - muzzlePoint.position).normalized;
-        dir = Quaternion.Euler(
-            Random.Range(-spreadDegrees, spreadDegrees),
-            Random.Range(-spreadDegrees, spreadDegrees),
-            0f) * dir;
+        // Buscar al jugador
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (!player) return;
+
+        // Verificar primero si el disparo va a dar según accuracy
+        bool willHit = Random.Range(0f, 1f) <= accuracy;
+        
+        Debug.Log($"[EnemyPopper] {name} disparo - Accuracy: {accuracy}, WillHit: {willHit}");
+        
+        // Dirección hacia el jugador
+        Vector3 targetPos = player.transform.position + Vector3.up * 1.5f; // Apuntar al torso
+        Vector3 dir = (targetPos - muzzlePoint.position).normalized;
+        
+        // Si no va a dar, agregar spread extra para fallar intencionalmente
+        if (!willHit)
+        {
+            // Spread extra para fallar a propósito
+            float missSpread = spreadDegrees + Random.Range(5f, 15f);
+            dir = Quaternion.Euler(
+                Random.Range(-missSpread, missSpread),
+                Random.Range(-missSpread, missSpread),
+                0f) * dir;
+        }
+        else
+        {
+            // Spread normal para disparos que pueden dar
+            dir = Quaternion.Euler(
+                Random.Range(-spreadDegrees, spreadDegrees),
+                Random.Range(-spreadDegrees, spreadDegrees),
+                0f) * dir;
+        }
 
         Ray ray = new Ray(muzzlePoint.position, dir);
-        if (Physics.Raycast(ray, out RaycastHit hit, maxRange, ~0))
+        
+        // Debug visual del disparo
+        Debug.DrawLine(ray.origin, ray.origin + ray.direction * maxRange, willHit ? Color.red : Color.yellow, 0.2f);
+        
+        if (Physics.Raycast(ray, out RaycastHit hit, maxRange))
         {
+            Debug.Log($"[EnemyPopper] {name} raycast hit: {hit.collider.name} (Tag: {hit.collider.tag})");
+            
             if (hit.collider.CompareTag("Player") &&
                 hit.collider.TryGetComponent<IDamageable>(out var dmg))
             {
                 dmg.TakeDamage(damagePerShot, hit.point, hit.normal);
-                // Debug.Log($"[EnemyPopper] {name} hit Player ({damagePerShot}).");
+                Debug.Log($"[EnemyPopper] {name} HIT Player! Daño: {damagePerShot}");
+            }
+            else
+            {
+                Debug.Log($"[EnemyPopper] {name} hit algo que no es Player o no tiene IDamageable");
             }
         }
-        // else // miss
+        else
+        {
+            Debug.Log($"[EnemyPopper] {name} raycast MISS - no hit nada");
+        }
     }
 
     // ---------- Gizmos ----------

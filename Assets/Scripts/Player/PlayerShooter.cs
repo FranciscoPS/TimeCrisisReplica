@@ -57,6 +57,7 @@ public class PlayerShooter : MonoBehaviour
         // Inicializar UI después de que todos los sistemas estén listos
         GameEvents.AmmoChanged?.Invoke(_currentAmmo, magazineSize);
         GameEvents.ReloadAlert?.Invoke(false);
+        GameEvents.ReloadingStatus?.Invoke(false); // Asegurar que "Reloading..." esté oculto al inicio
     }
 
     void OnEnable()
@@ -204,7 +205,7 @@ public class PlayerShooter : MonoBehaviour
         GameEvents.AmmoChanged?.Invoke(_currentAmmo, magazineSize);
         if (_currentAmmo <= 0)
         {
-            GameEvents.ReloadAlert?.Invoke(true);
+            GameEvents.ReloadAlert?.Invoke(true); // Mostrar "Reload!"
             return;
         }
 
@@ -245,14 +246,15 @@ public class PlayerShooter : MonoBehaviour
     private System.Collections.IEnumerator ReloadRoutine()
     {
         _isReloading = true;
-        GameEvents.ReloadAlert?.Invoke(true);
+        GameEvents.ReloadAlert?.Invoke(false); // Ocultar "Reload!"
+        GameEvents.ReloadingStatus?.Invoke(true); // Mostrar "Reloading..."
 
         Debug.Log("[PlayerShooter] Recargando...");
         yield return new WaitForSeconds(reloadTime);
         _currentAmmo = magazineSize;
         _isReloading = false;
         GameEvents.AmmoChanged?.Invoke(_currentAmmo, magazineSize);
-        GameEvents.ReloadAlert?.Invoke(false);
+        GameEvents.ReloadingStatus?.Invoke(false); // Ocultar "Reloading..."
         Debug.Log("[PlayerShooter] Recarga completa");
     }
 

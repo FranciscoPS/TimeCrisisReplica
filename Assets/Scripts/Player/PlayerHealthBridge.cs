@@ -3,8 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 public class PlayerHealthBridge : MonoBehaviour
 {
-    public int uiHealthSegments = 8; // cuántos íconos quieres en UI
-
     private Health _health;
 
     void Awake()
@@ -16,6 +14,15 @@ public class PlayerHealthBridge : MonoBehaviour
     {
         // Ahora Health ya ejecutó su Awake(), _current está inicializado
         Debug.Log($"[VIDA] Jugador iniciado: {_health.Current}/{_health.maxHealth} HP");
+        
+        // Configurar automáticamente las vidas en la UI
+        var gameUI = FindFirstObjectByType<GameUI>();
+        if (gameUI)
+        {
+            int lives = Mathf.RoundToInt(_health.maxHealth);
+            gameUI.SetHealthSegments(lives);
+        }
+        
         GameEvents.PlayerHealthChanged?.Invoke(_health.Current, _health.maxHealth);
     }
 

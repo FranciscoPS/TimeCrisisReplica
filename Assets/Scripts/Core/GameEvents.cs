@@ -8,6 +8,7 @@ public static class GameEvents
     public static Action EnemyKilled; // disparado por cada enemigo al morir (+20s)
 
     public static Action<int, int> AmmoChanged; // (actual, máximo)
-    public static Action<bool> ReloadAlert; // true = mostrar "Reload!"
+    public static Action<bool> ReloadAlert; // true = mostrar "Reload!" cuando sin balas
+    public static Action<bool> ReloadingStatus; // true = mostrar "Reloading..." durante recarga
     public static Action<float, float> PlayerHealthChanged; // (actual, máximo)
 }

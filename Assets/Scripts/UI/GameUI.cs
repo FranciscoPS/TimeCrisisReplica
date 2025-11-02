@@ -20,7 +20,15 @@ public class GameUI : MonoBehaviour
     private int _healthSegments = 0;
 
     [Header("Alerts")]
-    public TMP_Text reloadText;             // “RELOAD!” (ocúltalo por defecto)
+    public TMP_Text reloadText;             // "RELOAD!" cuando sin balas
+    public TMP_Text reloadingText;          // "Reloading..." durante recarga
+
+    void Start()
+    {
+        // Inicializar textos ocultos
+        if (reloadText) reloadText.gameObject.SetActive(false);
+        if (reloadingText) reloadingText.gameObject.SetActive(false);
+    }
 
     void OnEnable()
     {
@@ -28,6 +36,7 @@ public class GameUI : MonoBehaviour
         GameEvents.AmmoChanged      += OnAmmoChanged;
         GameEvents.PlayerHealthChanged += OnHealthChanged;
         GameEvents.ReloadAlert      += OnReloadAlert;
+        GameEvents.ReloadingStatus  += OnReloadingStatus;
         GameEvents.GameOver         += OnGameOver;
     }
     void OnDisable()
@@ -36,6 +45,7 @@ public class GameUI : MonoBehaviour
         GameEvents.AmmoChanged      -= OnAmmoChanged;
         GameEvents.PlayerHealthChanged -= OnHealthChanged;
         GameEvents.ReloadAlert      -= OnReloadAlert;
+        GameEvents.ReloadingStatus  -= OnReloadingStatus;
         GameEvents.GameOver         -= OnGameOver;
     }
 
@@ -79,20 +89,18 @@ public class GameUI : MonoBehaviour
     }
     void OnHealthChanged(float current, float max)
     {
-        int segments = _healthSegments > 0 ? _healthSegments : 8; // por defecto 8 vidas
-        if (_healthSegments == 0) _healthSegments = segments;
+        // Usar directamente la vida actual como número de vidas
+        int maxLives = Mathf.RoundToInt(max);
+        int currentLives = Mathf.RoundToInt(current);
+        
+        if (_healthSegments == 0) _healthSegments = maxLives;
+        
+        EnsureHealthIcons(maxLives);
 
-        EnsureHealthIcons(segments);
+        Debug.Log($"[VIDA] {currentLives}/{maxLives} vidas restantes");
 
-        // Calcular vidas restantes (cada vida = max/segments puntos de salud)
-        float healthPerSegment = max / segments;
-        int activeLives = Mathf.CeilToInt(current / healthPerSegment);
-        activeLives = Mathf.Clamp(activeLives, 0, segments);
-
-        Debug.Log($"[VIDA] {activeLives}/{segments} vidas restantes");
-
-        for (int i = 0; i < segments; i++)
-            _healthIcons[i].color = (i < activeLives) ? Color.white : new Color(1,1,1,0.2f);
+        for (int i = 0; i < maxLives; i++)
+            _healthIcons[i].color = (i < currentLives) ? Color.white : new Color(1,1,1,0.2f);
     }
 
     // Puedes establecerlo desde el Player al iniciar si quieres 3/5/10 segmentos exactos
@@ -108,10 +116,16 @@ public class GameUI : MonoBehaviour
         if (reloadText) reloadText.gameObject.SetActive(show);
     }
 
+    void OnReloadingStatus(bool show)
+    {
+        if (reloadingText) reloadingText.gameObject.SetActive(show);
+    }
+
     void OnGameOver()
     {
         if (reloadText) reloadText.text = "GAME OVER";
         if (reloadText) reloadText.gameObject.SetActive(true);
+        if (reloadingText) reloadingText.gameObject.SetActive(false);
         // Aquí podrías pausar, etc.
     }
 }
