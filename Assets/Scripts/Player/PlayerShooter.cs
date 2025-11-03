@@ -1,5 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem; // Mouse.current y InputAction
+using DG.Tweening;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering.PostProcessing;
 
 // Asegúrate de haber generado la clase InputSystem_Actions desde tu .inputactions
 
@@ -27,6 +31,7 @@ public class PlayerShooter : MonoBehaviour
     public float tracerWidth = 0.02f;
     public Color tracerColorHit = Color.red;
     public Color tracerColorMiss = Color.yellow;
+
 
     // ─────────────────────────────────────────────────────────────────────────────
 
@@ -153,6 +158,7 @@ public class PlayerShooter : MonoBehaviour
     private void OnCoverPerformed(InputAction.CallbackContext ctx)
     {
         SetCover(true);
+        
     }
 
     private void OnCoverCanceled(InputAction.CallbackContext ctx)
