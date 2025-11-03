@@ -861,7 +861,6 @@ GameObject:
   - component: {fileID: 129852869}
   - component: {fileID: 129852870}
   - component: {fileID: 129852871}
-  - component: {fileID: 129852872}
   m_Layer: 3
   m_Name: PlayerRig
   m_TagString: Player
@@ -965,21 +964,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba4c1a11a455a4e80ba7d37721abc739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &129852872
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 129852866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4118970ad9dbc3448922d0bddcdfadef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vignetteKey: 32
-  volume: {fileID: 0}
-  vignette: {fileID: 0}
 --- !u!1 &138612237
 GameObject:
   m_ObjectHideFlags: 0
@@ -4353,8 +4337,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1a6df365f2bafc4184e8a36caf9abfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageOverlay: {fileID: 654057616}
-  damageColor: {r: 1, g: 0, b: 0, a: 0.3}
+  volume: {fileID: 1694721408}
+  flashIntensity: 0.45
   fadeDuration: 0.5
   flashSpeed: 10
   flashDuration: 0.1
@@ -6956,7 +6940,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1694721409}
   - component: {fileID: 1694721408}
-  - component: {fileID: 1694721410}
   m_Layer: 0
   m_Name: PostProcessing
   m_TagString: Untagged
@@ -6977,7 +6960,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IsGlobal: 1
-  priority: 0
+  priority: 1
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 8070aacfd45ce45419991991deb1eeae, type: 2}
@@ -6996,21 +6979,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1694721410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1694721407}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4118970ad9dbc3448922d0bddcdfadef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vignetteKey: 32
-  volume: {fileID: 1694721408}
-  vignette: {fileID: 0}
 --- !u!1 &1702408690
 GameObject:
   m_ObjectHideFlags: 0
@@ -7678,7 +7646,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1863905636
 RectTransform:
   m_ObjectHideFlags: 0
