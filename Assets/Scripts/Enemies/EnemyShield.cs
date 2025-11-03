@@ -115,6 +115,23 @@ public class EnemyShield : MonoBehaviour
     {
         _state = s;
         _timer = wait;
+        Debug.Log("_state");
+        if (animator)
+        {
+            Debug.LogError("no pasa");
+            switch (_state)
+            {
+                case State.MovingToPop:
+                case State.Exposed:
+                    animator.SetTrigger("POP");
+                    break;
+
+                case State.MovingToHidden:
+                case State.Hidden:
+                    animator.SetTrigger("HIDE");
+                    break;
+            }
+        }
     }
 
     private float RandomRange(Vector2 range)

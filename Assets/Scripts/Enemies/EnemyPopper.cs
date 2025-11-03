@@ -148,6 +148,22 @@ public class EnemyPopper : MonoBehaviour
         _state = s;
         _timer = wait;
         // Debug.Log($"[EnemyPopper] {name} -> {_state} (wait={wait:0.00}s)");
+
+        if (animator)
+        {
+            switch (_state)
+            {
+                case State.MovingToPop:
+                case State.Exposed:
+                    animator.SetTrigger("POP");
+                    break;
+
+                case State.MovingToHidden:
+                case State.Hidden:
+                    animator.SetTrigger("HIDE");
+                    break;
+            }
+        }
     }
 
     private float RandomRange(Vector2 range)
