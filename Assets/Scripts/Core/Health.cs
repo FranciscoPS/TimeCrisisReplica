@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.Animations;
-using System.Collections;
 
 [DisallowMultipleComponent]
 public class Health : MonoBehaviour, IDamageable
@@ -35,9 +34,12 @@ public class Health : MonoBehaviour, IDamageable
             rootToDestroy = gameObject; // fallback
     }
 
+    private bool _isDead = false;
+
     public void TakeDamage(float amount, Vector3 hitPoint, Vector3 hitNormal)
     {
-        if (invulnerable || _current <= 0f)
+        // Evitar múltiples llamadas de daño en enemigos ya muertos
+        if (invulnerable || _current <= 0f || _isDead)
             return;
 
         _current -= amount;
@@ -46,6 +48,7 @@ public class Health : MonoBehaviour, IDamageable
         if (_current <= 0f)
         {
             _current = 0f;
+            _isDead = true; // Marcar como muerto para evitar múltiples llamadas
             OnDeath?.Invoke();
             Die(); // ← importante
         }
@@ -55,38 +58,17 @@ public class Health : MonoBehaviour, IDamageable
     {
         // Disparar animación de muerte solo si hay animator asignado
         if (animator)
-        {
             animator.SetTrigger("DEATH");
-            // Se espera a que la animacion continue
-            StartCoroutine(WaitForDeathAnimation());
-        }
-        else
-        {
-            // En caso de que no hubiera animacion, se salta directamente
-            OnDeathAnimationEnd();
-        }
-    }
-
-    private IEnumerator WaitForDeathAnimation()
-    {
-        // se espera un rato para que la animacion inicie
-        yield return null;
-
-        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
-        float waitTime = state.length;
-        yield return new WaitForSeconds(waitTime);
-        OnDeathAnimationEnd();
-    }
-
-    // Se apagan los colliders, renders y se desabilitan al terminar la animacion
-    private void OnDeathAnimationEnd()
-    {
+        
+        // 1) deshabilitar lógica (opcional)
         if (toDisableOnDeath != null)
         {
             foreach (var mb in toDisableOnDeath)
-                if (mb) mb.enabled = false;
+                if (mb)
+                    mb.enabled = false;
         }
 
+        // 2) quitar colliders y renderers para que “desaparezca” ya
         if (rootToDestroy)
         {
             foreach (var col in rootToDestroy.GetComponentsInChildren<Collider>(true))
@@ -95,6 +77,7 @@ public class Health : MonoBehaviour, IDamageable
             foreach (var r in rootToDestroy.GetComponentsInChildren<Renderer>(true))
                 r.enabled = false;
 
+            // 3) destruir todo el árbol (EnemyParent) tras el delay
             Destroy(rootToDestroy, deathDestroyDelay);
         }
         else

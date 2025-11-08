@@ -59,6 +59,7 @@ public class EnemyPopper : MonoBehaviour
     private Coroutine _moveCR;
     private bool _moving;
     private float _shootTimer;
+    private Health _health;
 
     void Start()
     {
@@ -70,6 +71,9 @@ public class EnemyPopper : MonoBehaviour
         }
 
         if (!lookPivot) lookPivot = transform;
+
+        // Obtener referencia al Health component para verificar si está muerto
+        _health = GetComponent<Health>();
 
         var pGo = GameObject.FindGameObjectWithTag(playerTag);
         if (pGo)
@@ -85,6 +89,19 @@ public class EnemyPopper : MonoBehaviour
 
     void Update()
     {
+        // Si el enemigo está muerto, detener toda la lógica de movimiento y ataque
+        if (IsDead())
+        {
+            // Detener movimiento si está en progreso
+            if (_moveCR != null)
+            {
+                StopCoroutine(_moveCR);
+                _moveCR = null;
+                _moving = false;
+            }
+            return;
+        }
+
         switch (_state)
         {
             case State.Hidden:
@@ -148,22 +165,6 @@ public class EnemyPopper : MonoBehaviour
         _state = s;
         _timer = wait;
         // Debug.Log($"[EnemyPopper] {name} -> {_state} (wait={wait:0.00}s)");
-
-        if (animator)
-        {
-            switch (_state)
-            {
-                case State.MovingToPop:
-                case State.Exposed:
-                    animator.SetTrigger("POP");
-                    break;
-
-                case State.MovingToHidden:
-                case State.Hidden:
-                    animator.SetTrigger("HIDE");
-                    break;
-            }
-        }
     }
 
     private float RandomRange(Vector2 range)
@@ -176,6 +177,7 @@ public class EnemyPopper : MonoBehaviour
     {
         if (_moving) return;
         if (!from || !to) return;
+        if (IsDead()) return; // No iniciar movimientos si está muerto
 
         // Snap al origen del tween para evitar deriva
         if (!IsAtPose(from)) SnapToPose(from);
@@ -232,6 +234,11 @@ public class EnemyPopper : MonoBehaviour
     {
         if (_playerShooter == null) return true; // si no hay referencia, asumimos expuesto
         return _playerShooter.IsExposed;
+    }
+
+    private bool IsDead()
+    {
+        return _health != null && _health.Current <= 0f;
     }
 
     private void FacePlayerYaw()
