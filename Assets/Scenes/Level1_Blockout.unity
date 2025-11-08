@@ -4337,8 +4337,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1a6df365f2bafc4184e8a36caf9abfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volume: {fileID: 1694721408}
-  flashIntensity: 0.45
+  damageOverlay: {fileID: 654057616}
+  damageColor: {r: 1, g: 0, b: 0, a: 0.3}
   fadeDuration: 0.5
   flashSpeed: 10
   flashDuration: 0.1
