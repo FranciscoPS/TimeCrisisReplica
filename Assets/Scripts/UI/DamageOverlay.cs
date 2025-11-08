@@ -1,16 +1,15 @@
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 using System.Collections;
 
 public class DamageOverlay : MonoBehaviour
 {
     [Header("Damage Overlay")]
-    [Tooltip("El postproccesing")]
-    public Volume volume;
+    [Tooltip("La imagen que se pondrá roja cuando recibas daño")]
+    public Image damageOverlay;
     
-    [Tooltip("La vignette que se pondrá roja cuando recibas daño")]
-    public float flashIntensity = 0.60f; // Rojo semi-transparente
+    [Tooltip("Color del overlay al recibir daño")]
+    public Color damageColor = new Color(1f, 0f, 0f, 0.3f); // Rojo semi-transparente
     
     [Tooltip("Duración del efecto de fade")]
     public float fadeDuration = 0.5f;
@@ -21,22 +20,21 @@ public class DamageOverlay : MonoBehaviour
     [Tooltip("Duración del parpadeo inicial")]
     public float flashDuration = 0.1f;
 
-    private Vignette _vignette;
     private Coroutine _damageCoroutine;
+    private Color _transparentColor;
 
     void Awake()
     {
-        if (!volume)
-            volume = GetComponent<Volume>();
-
-        if (!volume || !volume.profile.TryGet(out _vignette))
+        _transparentColor = new Color(damageColor.r, damageColor.g, damageColor.b, 0f);
+        
+        if (!damageOverlay)
         {
-            Debug.LogError("[DamageVignette] Volume o Vignette no encontrado!");
-            enabled = false;
+            Debug.LogError("[DamageOverlay] No hay imagen asignada para el overlay!");
             return;
         }
-
-        _vignette.intensity.value = 0f;
+        
+        // Empezar transparente
+        damageOverlay.color = _transparentColor;
     }
 
     void OnEnable()
@@ -64,37 +62,43 @@ public class DamageOverlay : MonoBehaviour
 
     public void ShowDamageEffect()
     {
-        if (!volume || !_vignette) return;
-
-        // Stop previous effect if running
+        if (!damageOverlay) return;
+        
+        // Detener efecto anterior si existe
         if (_damageCoroutine != null)
+        {
             StopCoroutine(_damageCoroutine);
-
+        }
+        
         _damageCoroutine = StartCoroutine(DamageEffectRoutine());
     }
 
     private IEnumerator DamageEffectRoutine()
     {
-        // 1. Flash pulse
+        // 1. Flash inicial rápido
         float flashTimer = 0f;
         while (flashTimer < flashDuration)
         {
             float flash = Mathf.Sin(flashTimer * flashSpeed * Mathf.PI * 2f) * 0.5f + 0.5f;
-            _vignette.intensity.value = Mathf.Lerp(0f, flashIntensity, flash);
+            damageOverlay.color = Color.Lerp(_transparentColor, damageColor, flash);
             flashTimer += Time.deltaTime;
             yield return null;
         }
-
-        // 2. Smooth fade out
+        
+        // 2. Fade out suave
         float fadeTimer = 0f;
+        damageOverlay.color = damageColor;
+        
         while (fadeTimer < fadeDuration)
         {
             float t = fadeTimer / fadeDuration;
-            _vignette.intensity.value = Mathf.Lerp(flashIntensity, 0f, t);
+            damageOverlay.color = Color.Lerp(damageColor, _transparentColor, t);
             fadeTimer += Time.deltaTime;
             yield return null;
         }
-
-        _vignette.intensity.value = 0f;
+        
+        // Asegurar que termine transparente
+        damageOverlay.color = _transparentColor;
+        _damageCoroutine = null;
     }
 }

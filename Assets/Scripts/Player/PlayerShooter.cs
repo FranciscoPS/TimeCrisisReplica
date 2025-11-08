@@ -162,7 +162,7 @@ public class PlayerShooter : MonoBehaviour
 
     private void OnReloadPerformed(InputAction.CallbackContext ctx)
     {
-        if (!_isReloading && _currentAmmo < magazineSize)
+        if (!_isReloading && _currentAmmo < magazineSize && !_isGameOver)
             StartCoroutine(ReloadRoutine());
     }
 
@@ -170,7 +170,7 @@ public class PlayerShooter : MonoBehaviour
 
     private void SetCover(bool cover)
     {
-        if (Time.time - _lastCoverToggle < coverDebounce)
+        if (Time.time - _lastCoverToggle < coverDebounce || _isGameOver)
             return;
         _lastCoverToggle = Time.time;
 
@@ -186,7 +186,7 @@ public class PlayerShooter : MonoBehaviour
 
     private void TryShoot()
     {
-        if (isInCover || _isReloading)
+        if (isInCover || _isReloading || _isGameOver)
         {
             return;
         }
