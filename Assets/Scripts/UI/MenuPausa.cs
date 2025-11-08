@@ -7,8 +7,6 @@ public class MenuPausa : MonoBehaviour
     
     public void RegresarAMenu()
     {
-        Debug.Log("[MenuPausa] RegresarAMenu clicked!");
-        
         if (pausaScript != null)
         {
             pausaScript.TogglePause(false);
@@ -34,8 +32,6 @@ public class MenuPausa : MonoBehaviour
 
     public void ReiniciarPartida()
     {
-        Debug.Log("[MenuPausa] ReiniciarPartida clicked!");
-        
         if (pausaScript != null)
         {
             pausaScript.TogglePause(false);
@@ -61,8 +57,6 @@ public class MenuPausa : MonoBehaviour
 
     public void RegresarAJuego()
     {
-        Debug.Log("[MenuPausa] RegresarAJuego clicked!");
-        
         if (pausaScript != null)
         {
             pausaScript.TogglePause(false);

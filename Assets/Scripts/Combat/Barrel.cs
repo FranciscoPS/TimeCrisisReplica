@@ -41,7 +41,7 @@ public class Barrel : MonoBehaviour
         // Buscar todos los colliders en el radio de explosión
         Collider[] hitColliders = Physics.OverlapSphere(explosionCenter, explosionRadius, damageableLayers);
         
-        Debug.Log($"[Barrel] Explosión! Radio: {explosionRadius}m, Objetivos detectados: {hitColliders.Length}");
+        Debug.Log($"[Barrel] Explosión! {hitColliders.Length} objetivos detectados");
         
         foreach (Collider hitCollider in hitColliders)
         {
@@ -59,8 +59,6 @@ public class Barrel : MonoBehaviour
                 Vector3 hitNormal = (hitCollider.transform.position - explosionCenter).normalized;
                 
                 damageable.TakeDamage(finalDamage, hitPoint, hitNormal);
-                
-                Debug.Log($"[Barrel] Daño explosión: {hitCollider.name} recibió {finalDamage:F1} daño (distancia: {distance:F1}m)");
             }
         }
     }

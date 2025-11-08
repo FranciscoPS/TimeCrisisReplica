@@ -27,7 +27,7 @@ public class MainMenuButtons : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[MainMenuButtons] FadePanel no asignado - las transiciones no funcionarán");
+
         }
     }
 

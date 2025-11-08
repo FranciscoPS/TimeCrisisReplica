@@ -264,8 +264,6 @@ public class EnemyPopper : MonoBehaviour
         // Verificar primero si el disparo va a dar según accuracy
         bool willHit = Random.Range(0f, 1f) <= accuracy;
         
-        Debug.Log($"[EnemyPopper] {name} disparo - Accuracy: {accuracy}, WillHit: {willHit}");
-        
         // Dirección hacia el jugador
         Vector3 targetPos = player.transform.position + Vector3.up * 1.5f; // Apuntar al torso
         Vector3 dir = (targetPos - muzzlePoint.position).normalized;
@@ -296,8 +294,6 @@ public class EnemyPopper : MonoBehaviour
         
         if (Physics.Raycast(ray, out RaycastHit hit, maxRange))
         {
-            Debug.Log($"[EnemyPopper] {name} raycast hit: {hit.collider.name} (Tag: {hit.collider.tag})");
-            
             if (hit.collider.CompareTag("Player") &&
                 hit.collider.TryGetComponent<IDamageable>(out var dmg))
             {
@@ -305,21 +301,8 @@ public class EnemyPopper : MonoBehaviour
                 if (willHit)
                 {
                     dmg.TakeDamage(damagePerShot, hit.point, hit.normal);
-                    Debug.Log($"[EnemyPopper] {name} HIT Player! Daño: {damagePerShot} (Accuracy success)");
-                }
-                else
-                {
-                    Debug.Log($"[EnemyPopper] {name} impactó Player pero FALLÓ por accuracy ({accuracy})");
                 }
             }
-            else
-            {
-                Debug.Log($"[EnemyPopper] {name} hit algo que no es Player o no tiene IDamageable");
-            }
-        }
-        else
-        {
-            Debug.Log($"[EnemyPopper] {name} raycast MISS - no hit nada");
         }
     }
 

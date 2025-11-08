@@ -97,7 +97,7 @@ public class GameUI : MonoBehaviour
         
         EnsureHealthIcons(maxLives);
 
-        Debug.Log($"[VIDA] {currentLives}/{maxLives} vidas restantes");
+
 
         for (int i = 0; i < maxLives; i++)
             _healthIcons[i].color = (i < currentLives) ? Color.white : new Color(1,1,1,0.2f);

@@ -68,8 +68,7 @@ public class SceneTransitionManager : MonoBehaviour
         // Asegurar que todos los tweens se limpien
         DOTween.KillAll();
         
-        // Log para debug
-        Debug.Log("[SceneTransition] Cleanup completed before scene change");
+
     }
 
     public void TransitionToMainMenu()

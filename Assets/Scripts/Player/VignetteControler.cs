@@ -12,7 +12,7 @@ public class VignetteControler : MonoBehaviour
         volume = GetComponent<Volume>();
         if(!volume.profile.TryGet(out vignette))
         {
-            Debug.Log("Yay");
+
         }
     }
 
