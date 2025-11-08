@@ -59,6 +59,7 @@ public class EnemyPopper : MonoBehaviour
     private Coroutine _moveCR;
     private bool _moving;
     private float _shootTimer;
+    private Health _health;
 
     void Start()
     {
@@ -70,6 +71,9 @@ public class EnemyPopper : MonoBehaviour
         }
 
         if (!lookPivot) lookPivot = transform;
+
+        // Obtener referencia al Health component para verificar si está muerto
+        _health = GetComponent<Health>();
 
         var pGo = GameObject.FindGameObjectWithTag(playerTag);
         if (pGo)
@@ -85,6 +89,19 @@ public class EnemyPopper : MonoBehaviour
 
     void Update()
     {
+        // Si el enemigo está muerto, detener toda la lógica de movimiento y ataque
+        if (IsDead())
+        {
+            // Detener movimiento si está en progreso
+            if (_moveCR != null)
+            {
+                StopCoroutine(_moveCR);
+                _moveCR = null;
+                _moving = false;
+            }
+            return;
+        }
+
         switch (_state)
         {
             case State.Hidden:
@@ -148,22 +165,6 @@ public class EnemyPopper : MonoBehaviour
         _state = s;
         _timer = wait;
         // Debug.Log($"[EnemyPopper] {name} -> {_state} (wait={wait:0.00}s)");
-
-        if (animator)
-        {
-            switch (_state)
-            {
-                case State.MovingToPop:
-                case State.Exposed:
-                    animator.SetTrigger("POP");
-                    break;
-
-                case State.MovingToHidden:
-                case State.Hidden:
-                    animator.SetTrigger("HIDE");
-                    break;
-            }
-        }
     }
 
     private float RandomRange(Vector2 range)
@@ -176,6 +177,7 @@ public class EnemyPopper : MonoBehaviour
     {
         if (_moving) return;
         if (!from || !to) return;
+        if (IsDead()) return; // No iniciar movimientos si está muerto
 
         // Snap al origen del tween para evitar deriva
         if (!IsAtPose(from)) SnapToPose(from);
@@ -234,6 +236,11 @@ public class EnemyPopper : MonoBehaviour
         return _playerShooter.IsExposed;
     }
 
+    private bool IsDead()
+    {
+        return _health != null && _health.Current <= 0f;
+    }
+
     private void FacePlayerYaw()
     {
         if (_playerTr == null || lookPivot == null) return;
@@ -256,8 +263,6 @@ public class EnemyPopper : MonoBehaviour
 
         // Verificar primero si el disparo va a dar según accuracy
         bool willHit = Random.Range(0f, 1f) <= accuracy;
-        
-        Debug.Log($"[EnemyPopper] {name} disparo - Accuracy: {accuracy}, WillHit: {willHit}");
         
         // Dirección hacia el jugador
         Vector3 targetPos = player.transform.position + Vector3.up * 1.5f; // Apuntar al torso
@@ -289,8 +294,6 @@ public class EnemyPopper : MonoBehaviour
         
         if (Physics.Raycast(ray, out RaycastHit hit, maxRange))
         {
-            Debug.Log($"[EnemyPopper] {name} raycast hit: {hit.collider.name} (Tag: {hit.collider.tag})");
-            
             if (hit.collider.CompareTag("Player") &&
                 hit.collider.TryGetComponent<IDamageable>(out var dmg))
             {
@@ -298,21 +301,8 @@ public class EnemyPopper : MonoBehaviour
                 if (willHit)
                 {
                     dmg.TakeDamage(damagePerShot, hit.point, hit.normal);
-                    Debug.Log($"[EnemyPopper] {name} HIT Player! Daño: {damagePerShot} (Accuracy success)");
-                }
-                else
-                {
-                    Debug.Log($"[EnemyPopper] {name} impactó Player pero FALLÓ por accuracy ({accuracy})");
                 }
             }
-            else
-            {
-                Debug.Log($"[EnemyPopper] {name} hit algo que no es Player o no tiene IDamageable");
-            }
-        }
-        else
-        {
-            Debug.Log($"[EnemyPopper] {name} raycast MISS - no hit nada");
         }
     }
 

@@ -36,9 +36,7 @@ public class Pausa : MonoBehaviour
         canvasPausa.interactable = pausa;
         canvasPausa.blocksRaycasts = pausa;
 
-        pauseTween = canvasPausa.DOFade(canvasAlpha, TWEEN_TIME).SetUpdate(true).OnComplete(() => {
-
-        });
+        pauseTween = canvasPausa.DOFade(canvasAlpha, TWEEN_TIME).SetUpdate(true);
         gamePaused = pausa;
     }
 }

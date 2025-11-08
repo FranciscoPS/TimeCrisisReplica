@@ -1,9 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem; // Mouse.current y InputAction
-using DG.Tweening;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.Rendering.PostProcessing;
 
 // Asegúrate de haber generado la clase InputSystem_Actions desde tu .inputactions
 
@@ -31,7 +27,6 @@ public class PlayerShooter : MonoBehaviour
     public float tracerWidth = 0.02f;
     public Color tracerColorHit = Color.red;
     public Color tracerColorMiss = Color.yellow;
-
 
     // ─────────────────────────────────────────────────────────────────────────────
 
@@ -103,15 +98,7 @@ public class PlayerShooter : MonoBehaviour
         // Si algo no se enlazó, lista mapas/acciones para que copies el nombre exacto
         if (_actFire == null || _actCover == null)
         {
-            Debug.LogWarning(
-                "[PlayerShooter] No se encontraron algunas acciones. Mapas/acciones disponibles:"
-            );
-            foreach (var map in _inputs.asset.actionMaps)
-            {
-                Debug.Log($"  Map: {map.name}");
-                foreach (var a in map.actions)
-                    Debug.Log($"    Action: {a.name}");
-            }
+            Debug.LogWarning("[PlayerShooter] No se encontraron algunas acciones.");
         }
 
         GameEvents.GameOver += OnGameOver;
@@ -136,14 +123,34 @@ public class PlayerShooter : MonoBehaviour
             _actReload.Disable();
         }
 
+        // IMPORTANTE: Desactivar completamente el InputSystem_Actions
+        if (_inputs != null)
+        {
+            _inputs.Disable();
+            _inputs.Dispose();
+        }
+
         GameEvents.GameOver -= OnGameOver;
+    }
+
+    void OnDestroy()
+    {
+        // Cleanup adicional cuando el GameObject se destruye
+        if (_inputs != null)
+        {
+            _inputs.Disable();
+            _inputs.Dispose();
+            Debug.Log("[PlayerShooter] InputSystem_Actions disposed in OnDestroy");
+        }
     }
 
     private void OnGameOver()
     {
         _isGameOver = true;
         if (_inputs != null)
+        {
             _inputs.Disable();
+        }
         Debug.Log("[PlayerShooter] GAME OVER");
     }
 
@@ -151,14 +158,12 @@ public class PlayerShooter : MonoBehaviour
 
     private void OnFirePerformed(InputAction.CallbackContext ctx)
     {
-        Debug.Log("[PlayerShooter] Fire.performed");
         TryShoot();
     }
 
     private void OnCoverPerformed(InputAction.CallbackContext ctx)
     {
         SetCover(true);
-        
     }
 
     private void OnCoverCanceled(InputAction.CallbackContext ctx)
@@ -168,7 +173,7 @@ public class PlayerShooter : MonoBehaviour
 
     private void OnReloadPerformed(InputAction.CallbackContext ctx)
     {
-        if (!_isReloading && _currentAmmo < magazineSize)
+        if (!_isReloading && _currentAmmo < magazineSize && !_isGameOver)
             StartCoroutine(ReloadRoutine());
     }
 
@@ -176,7 +181,7 @@ public class PlayerShooter : MonoBehaviour
 
     private void SetCover(bool cover)
     {
-        if (Time.time - _lastCoverToggle < coverDebounce)
+        if (Time.time - _lastCoverToggle < coverDebounce || _isGameOver)
             return;
         _lastCoverToggle = Time.time;
 
@@ -192,7 +197,7 @@ public class PlayerShooter : MonoBehaviour
 
     private void TryShoot()
     {
-        if (isInCover || _isReloading)
+        if (isInCover || _isReloading || _isGameOver)
         {
             return;
         }
@@ -202,7 +207,6 @@ public class PlayerShooter : MonoBehaviour
         }
         if (_currentAmmo <= 0)
         {
-            Debug.Log("[PlayerShooter] Sin balas - Recarga necesaria");
             return;
         }
 
@@ -223,8 +227,6 @@ public class PlayerShooter : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, maxRange, raycastMask))
         {
-            Debug.Log($"[PlayerShooter] Hit: {hit.collider.name}");
-
             // Tracer visible en Game view (hasta el impacto)
             if (drawTracerInGame)
                 DrawTracer(ray.origin, hit.point, tracerColorHit);
@@ -232,13 +234,11 @@ public class PlayerShooter : MonoBehaviour
             if (hit.collider.TryGetComponent<IDamageable>(out var dmg))
             {
                 dmg.TakeDamage(damagePerShot, hit.point, hit.normal);
-                Debug.Log($"[PlayerShooter] HIT: {hit.collider.name} - Daño: {damagePerShot}");
             }
 
             if (hit.collider.TryGetComponent<Barrel>(out var barrel))
             {
                 barrel.DestroyBarrel();
-                Debug.Log("[PlayerShooter] Barrel destruido");
             }
         }
         else
@@ -261,7 +261,6 @@ public class PlayerShooter : MonoBehaviour
         _isReloading = false;
         GameEvents.AmmoChanged?.Invoke(_currentAmmo, magazineSize);
         GameEvents.ReloadingStatus?.Invoke(false); // Ocultar "Reloading..."
-        Debug.Log("[PlayerShooter] Recarga completa");
     }
 
     // Expuesto para que la IA sepa si puede dispararte
@@ -296,20 +295,9 @@ public class PlayerShooter : MonoBehaviour
 
     private void LogBindingResult(string label, InputAction action, bool optional = false)
     {
-        if (action != null)
+        if (action == null && !optional)
         {
-            Debug.Log(
-                $"[PlayerShooter] {label} enlazada a '{action.actionMap?.name}/{action.name}'"
-            );
-        }
-        else
-        {
-            var msg =
-                $"[PlayerShooter] {label} NO encontrada. Ajusta nombres en FindActionFlexible(...) o renombra en tu .inputactions.";
-            if (optional)
-                Debug.Log(msg);
-            else
-                Debug.LogWarning(msg);
+            Debug.LogWarning($"[PlayerShooter] {label} NO encontrada.");
         }
     }
 
