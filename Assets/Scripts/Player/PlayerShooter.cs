@@ -131,14 +131,35 @@ public class PlayerShooter : MonoBehaviour
             _actReload.Disable();
         }
 
+        // IMPORTANTE: Desactivar completamente el InputSystem_Actions
+        if (_inputs != null)
+        {
+            _inputs.Disable();
+            _inputs.Dispose();
+        }
+
         GameEvents.GameOver -= OnGameOver;
+    }
+
+    void OnDestroy()
+    {
+        // Cleanup adicional cuando el GameObject se destruye
+        if (_inputs != null)
+        {
+            _inputs.Disable();
+            _inputs.Dispose();
+            Debug.Log("[PlayerShooter] InputSystem_Actions disposed in OnDestroy");
+        }
     }
 
     private void OnGameOver()
     {
         _isGameOver = true;
         if (_inputs != null)
+        {
             _inputs.Disable();
+            Debug.Log("[PlayerShooter] Inputs desactivados por Game Over");
+        }
         Debug.Log("[PlayerShooter] GAME OVER");
     }
 

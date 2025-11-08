@@ -50,14 +50,26 @@ public class SceneTransitionManager : MonoBehaviour
             // Fade out y cargar escena
             fadePanel.DOFade(1f, fadeDuration).OnComplete(() =>
             {
+                // Forzar limpieza antes del cambio de escena
+                CleanupBeforeSceneChange();
                 SceneManager.LoadScene(sceneName);
             });
         }
         else
         {
             // Fallback sin transición
+            CleanupBeforeSceneChange();
             SceneManager.LoadScene(sceneName);
         }
+    }
+
+    private void CleanupBeforeSceneChange()
+    {
+        // Asegurar que todos los tweens se limpien
+        DOTween.KillAll();
+        
+        // Log para debug
+        Debug.Log("[SceneTransition] Cleanup completed before scene change");
     }
 
     public void TransitionToMainMenu()

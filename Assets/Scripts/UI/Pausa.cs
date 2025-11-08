@@ -28,6 +28,8 @@ public class Pausa : MonoBehaviour
 
     public void TogglePause(bool pausa)
     {
+        Debug.Log($"[Pausa] TogglePause called with: {pausa}");
+        
         Time.timeScale = pausa ? 0 : 1;
 
         float canvasAlpha = pausa ? 1 : 0;
@@ -37,7 +39,7 @@ public class Pausa : MonoBehaviour
         canvasPausa.blocksRaycasts = pausa;
 
         pauseTween = canvasPausa.DOFade(canvasAlpha, TWEEN_TIME).SetUpdate(true).OnComplete(() => {
-
+            Debug.Log($"[Pausa] Fade completed, paused: {pausa}");
         });
         gamePaused = pausa;
     }

@@ -7,7 +7,16 @@ public class MenuPausa : MonoBehaviour
     
     public void RegresarAMenu()
     {
-        pausaScript.TogglePause(false);
+        Debug.Log("[MenuPausa] RegresarAMenu clicked!");
+        
+        if (pausaScript != null)
+        {
+            pausaScript.TogglePause(false);
+        }
+        else
+        {
+            Debug.LogError("[MenuPausa] pausaScript no asignado!");
+        }
         
         // Usar transición si está disponible
         if (SceneTransitionManager.Instance != null)
@@ -22,7 +31,16 @@ public class MenuPausa : MonoBehaviour
 
     public void ReiniciarPartida()
     {
-        pausaScript.TogglePause(false);
+        Debug.Log("[MenuPausa] ReiniciarPartida clicked!");
+        
+        if (pausaScript != null)
+        {
+            pausaScript.TogglePause(false);
+        }
+        else
+        {
+            Debug.LogError("[MenuPausa] pausaScript no asignado!");
+        }
         
         // Usar transición si está disponible
         if (SceneTransitionManager.Instance != null)
@@ -37,6 +55,15 @@ public class MenuPausa : MonoBehaviour
 
     public void RegresarAJuego()
     {
-        pausaScript.TogglePause(false);
+        Debug.Log("[MenuPausa] RegresarAJuego clicked!");
+        
+        if (pausaScript != null)
+        {
+            pausaScript.TogglePause(false);
+        }
+        else
+        {
+            Debug.LogError("[MenuPausa] pausaScript no asignado!");
+        }
     }
 }
