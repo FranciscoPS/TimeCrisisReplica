@@ -18,15 +18,18 @@ public class MenuPausa : MonoBehaviour
             Debug.LogError("[MenuPausa] pausaScript no asignado!");
         }
         
-        // Usar transición si está disponible
-        if (SceneTransitionManager.Instance != null)
+        // Usar fade y transición
+        GameplayFadeManager.DoFadeToBlack(() =>
         {
-            SceneTransitionManager.Instance.TransitionToMainMenu();
-        }
-        else
-        {
-            SceneManager.LoadScene("MainMenu");
-        }
+            if (SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.TransitionToMainMenu();
+            }
+            else
+            {
+                SceneManager.LoadScene("MainMenu");
+            }
+        });
     }
 
     public void ReiniciarPartida()
@@ -42,15 +45,18 @@ public class MenuPausa : MonoBehaviour
             Debug.LogError("[MenuPausa] pausaScript no asignado!");
         }
         
-        // Usar transición si está disponible
-        if (SceneTransitionManager.Instance != null)
+        // Usar fade y transición
+        GameplayFadeManager.DoFadeToBlack(() =>
         {
-            SceneTransitionManager.Instance.RestartCurrentScene();
-        }
-        else
-        {
-            SceneManager.LoadScene("Level1_Blockout");
-        }
+            if (SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.RestartCurrentScene();
+            }
+            else
+            {
+                SceneManager.LoadScene("Level1_Blockout");
+            }
+        });
     }
 
     public void RegresarAJuego()
