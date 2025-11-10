@@ -14,7 +14,7 @@ public class MainMenuButtons : MonoBehaviour
     
     [Header("Scene Settings")]
     [Tooltip("Nombre de la escena del gameplay")]
-    public string gameplayScene = "Level1_Blockout";
+    public string gameplayScene = "cutscene";
 
     void Start()
     {

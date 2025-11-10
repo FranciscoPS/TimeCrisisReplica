@@ -1282,7 +1282,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadePanel: {fileID: 494295388}
   fadeDuration: 1
-  gameplayScene: Level1_Blockout
+  gameplayScene: cutscene
 --- !u!4 &2110963917
 Transform:
   m_ObjectHideFlags: 0

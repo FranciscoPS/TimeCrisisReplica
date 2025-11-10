@@ -55,7 +55,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1569b9b4589daf74baa8a3701b0dd75f, type: 2}
+  - {fileID: 2100000, guid: 3f40278b6151d314da47c3da2c837259, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -174,7 +174,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6ae52c3fa887cbe478f22ae9e6a2d759, type: 2}
+  - {fileID: 2100000, guid: 236d2510adffedb44910eead8b4b9bc1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -262,7 +262,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f6b5228cc7dea854c834aabac0dbfab9, type: 2}
+  - {fileID: 2100000, guid: 1187e90b0f3001c4cbac327436e77170, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -483,7 +483,7 @@ GameObject:
   - component: {fileID: 427246}
   - component: {fileID: 9530324}
   m_Layer: 0
-  m_Name: Space_Soldier_A
+  m_Name: Space_Soldier_PC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
