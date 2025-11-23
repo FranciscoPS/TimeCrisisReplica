@@ -105,6 +105,9 @@ public class ZoneFlowController : MonoBehaviour
     IEnumerator TravelToZone(int nextIndex)
     {
         _isTravelling = true;
+        
+        // Notificar que estamos viajando
+        GameEvents.TravellingBetweenZones?.Invoke(true);
 
         // Apaga zona actual (ya está limpia)
         if (_current >= 0) zones[_current].Deactivate();
@@ -152,6 +155,9 @@ public class ZoneFlowController : MonoBehaviour
         }
 
         _isTravelling = false;
+        
+        // Notificar que ya no estamos viajando
+        GameEvents.TravellingBetweenZones?.Invoke(false);
     }
 
     // ---- Helpers específicos del Spline Cart ----

@@ -11,4 +11,7 @@ public static class GameEvents
     public static Action<bool> ReloadAlert; // true = mostrar "Reload!" cuando sin balas
     public static Action<bool> ReloadingStatus; // true = mostrar "Reloading..." durante recarga
     public static Action<float, float> PlayerHealthChanged; // (actual, máximo)
+    
+    // Evento para notificar cuando se está viajando entre zonas
+    public static Action<bool> TravellingBetweenZones; // true = viajando, false = en zona
 }

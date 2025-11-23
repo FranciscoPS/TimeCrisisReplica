@@ -41,6 +41,7 @@ public class PlayerShooter : MonoBehaviour
     private float _lastCoverToggle;
     private Health _health;
     private bool _isGameOver;
+    private bool _isTravelling; // true cuando está viajando entre zonas
 
     void Awake()
     {
@@ -102,6 +103,7 @@ public class PlayerShooter : MonoBehaviour
         }
 
         GameEvents.GameOver += OnGameOver;
+        GameEvents.TravellingBetweenZones += OnTravellingChanged;
     }
 
     void OnDisable()
@@ -131,6 +133,7 @@ public class PlayerShooter : MonoBehaviour
         }
 
         GameEvents.GameOver -= OnGameOver;
+        GameEvents.TravellingBetweenZones -= OnTravellingChanged;
     }
 
     void OnDestroy()
@@ -153,6 +156,17 @@ public class PlayerShooter : MonoBehaviour
         }
         Debug.Log("[PlayerShooter] GAME OVER");
     }
+    
+    private void OnTravellingChanged(bool travelling)
+    {
+        _isTravelling = travelling;
+        
+        // Si empieza a viajar y está en cobertura, forzar salida
+        if (travelling && isInCover)
+        {
+            isInCover = false;
+        }
+    }
 
     // ───────────── Input callbacks ─────────────
 
@@ -173,7 +187,8 @@ public class PlayerShooter : MonoBehaviour
 
     private void OnReloadPerformed(InputAction.CallbackContext ctx)
     {
-        if (!_isReloading && _currentAmmo < magazineSize && !_isGameOver)
+        // Bloquear recarga si está viajando entre zonas
+        if (!_isReloading && _currentAmmo < magazineSize && !_isGameOver && !_isTravelling)
             StartCoroutine(ReloadRoutine());
     }
 
@@ -181,7 +196,8 @@ public class PlayerShooter : MonoBehaviour
 
     private void SetCover(bool cover)
     {
-        if (Time.time - _lastCoverToggle < coverDebounce || _isGameOver)
+        // Bloquear cobertura si está viajando entre zonas
+        if (Time.time - _lastCoverToggle < coverDebounce || _isGameOver || _isTravelling)
             return;
         _lastCoverToggle = Time.time;
 
@@ -195,9 +211,10 @@ public class PlayerShooter : MonoBehaviour
         }
     }
 
-    private void TryShoot()
+    void TryShoot()
     {
-        if (isInCover || _isReloading || _isGameOver)
+        // Bloquear disparo si está en cobertura, recargando, game over o viajando
+        if (isInCover || _isReloading || _isGameOver || _isTravelling)
         {
             return;
         }

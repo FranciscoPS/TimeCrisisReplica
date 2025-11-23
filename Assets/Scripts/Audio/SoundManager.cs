@@ -32,6 +32,14 @@ public class SoundManager : MonoBehaviour
     [Tooltip("Sonido de recarga del arma")]
     public AudioClip reloadSFX;
     
+    [Header("SFX - Enemigos")]
+    [Tooltip("Sonido cuando muere un enemigo")]
+    public AudioClip enemyDeathSFX;
+    
+    [Header("SFX - Tiempo")]
+    [Tooltip("Sonido cuando se agregan segundos al timer")]
+    public AudioClip timeAddedSFX;
+    
     [Header("Configuración de Audio")]
     [Range(0f, 1f)]
     [Tooltip("Volumen de la música de fondo")]
@@ -152,6 +160,22 @@ public class SoundManager : MonoBehaviour
     public void PlayReload()
     {
         PlaySFX(reloadSFX);
+    }
+    
+    /// <summary>
+    /// Reproduce el sonido de muerte de enemigo
+    /// </summary>
+    public void PlayEnemyDeath()
+    {
+        PlaySFX(enemyDeathSFX);
+    }
+    
+    /// <summary>
+    /// Reproduce el sonido cuando se agregan segundos al timer
+    /// </summary>
+    public void PlayTimeAdded()
+    {
+        PlaySFX(timeAddedSFX);
     }
 
     /// <summary>

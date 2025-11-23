@@ -59,6 +59,13 @@ public class GameTimer : MonoBehaviour
         if (!running)
             return;
         _timeLeft += bonusPerKill;
+        
+        // Reproducir sonido de tiempo agregado
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayTimeAdded();
+        }
+        
         GameEvents.TimerChanged?.Invoke(_timeLeft);
     }
 }

@@ -56,6 +56,12 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        // Reproducir sonido de muerte
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayEnemyDeath();
+        }
+        
         // Disparar animación de muerte solo si hay animator asignado
         if (animator)
             animator.SetTrigger("DEATH");
