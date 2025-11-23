@@ -3,9 +3,9 @@ using UnityEngine;
 public class GameTimer : MonoBehaviour
 {
     [Tooltip("Segundos iniciales de la partida")]
-    public float startSeconds = 120f; // 2:00
+    public float startSeconds = 60f; // 1:00
 
-    [Tooltip("Segundos a sumar por enemigo eliminado")]
+    [Tooltip("Segundos a sumar por headshot")]
     public float bonusPerKill = 20f;
 
     public bool running = true;
@@ -54,18 +54,23 @@ public class GameTimer : MonoBehaviour
         }
     }
 
-    void OnEnemyKilled()
+    void OnEnemyKilled(bool wasHeadshot)
     {
         if (!running)
             return;
-        _timeLeft += bonusPerKill;
         
-        // Reproducir sonido de tiempo agregado
-        if (SoundManager.Instance != null)
+        // Solo sumar tiempo si fue headshot
+        if (wasHeadshot)
         {
-            SoundManager.Instance.PlayTimeAdded();
+            _timeLeft += bonusPerKill;
+            
+            // Reproducir sonido de tiempo agregado
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlayTimeAdded();
+            }
+            
+            GameEvents.TimerChanged?.Invoke(_timeLeft);
         }
-        
-        GameEvents.TimerChanged?.Invoke(_timeLeft);
     }
 }

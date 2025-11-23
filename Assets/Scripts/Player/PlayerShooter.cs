@@ -249,26 +249,55 @@ public class PlayerShooter : MonoBehaviour
         // Línea de ayuda en Scene view (requiere Gizmos ON)
         Debug.DrawLine(ray.origin, ray.origin + ray.direction * maxRange, Color.yellow, 0.15f);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, maxRange, raycastMask))
+        // Usar RaycastAll para detectar TODOS los colliders en el rayo (para priorizar headshots)
+        RaycastHit[] hits = Physics.RaycastAll(ray, maxRange, raycastMask);
+        
+        if (hits.Length > 0)
         {
-            // Tracer visible en Game view (hasta el impacto)
+            // Ordenar hits por distancia (más cercano primero)
+            System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+            
+            RaycastHit primaryHit = hits[0];
+            
+            // Tracer visible en Game view (hasta el impacto más cercano)
             if (drawTracerInGame)
-                DrawTracer(ray.origin, hit.point, tracerColorHit);
+                DrawTracer(ray.origin, primaryHit.point, tracerColorHit);
 
             // Verificar si el disparo impactó directamente el layer "Cover" (escudo)
-            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Cover"))
+            if (primaryHit.collider.gameObject.layer == LayerMask.NameToLayer("Cover"))
             {
                 // El escudo bloquea el disparo - no hacer daño
                 return;
             }
 
-            // Si impactó un enemigo, verificar si hay daño
-            if (hit.collider.TryGetComponent<IDamageable>(out var dmg))
+            // Buscar si alguno de los hits es headshot
+            bool isHeadshot = false;
+            HeadshotDetector headshotDetector = null;
+            
+            foreach (var hit in hits)
             {
-                dmg.TakeDamage(damagePerShot, hit.point, hit.normal);
+                var detector = hit.collider.GetComponent<HeadshotDetector>();
+                if (detector != null)
+                {
+                    isHeadshot = true;
+                    headshotDetector = detector;
+                    break;
+                }
+            }
+            
+            // Si fue headshot, aplicar daño al parentHealth
+            if (isHeadshot && headshotDetector != null && headshotDetector.parentHealth != null)
+            {
+                headshotDetector.parentHealth.TakeDamage(damagePerShot, primaryHit.point, primaryHit.normal, true);
+            }
+            // Si no fue headshot, buscar IDamageable en el primer hit
+            else if (primaryHit.collider.TryGetComponent<IDamageable>(out var dmg))
+            {
+                dmg.TakeDamage(damagePerShot, primaryHit.point, primaryHit.normal, false);
             }
 
-            if (hit.collider.TryGetComponent<Barrel>(out var barrel))
+            // Verificar barril
+            if (primaryHit.collider.TryGetComponent<Barrel>(out var barrel))
             {
                 barrel.DestroyBarrel();
             }

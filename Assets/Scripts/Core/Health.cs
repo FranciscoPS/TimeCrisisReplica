@@ -36,7 +36,9 @@ public class Health : MonoBehaviour, IDamageable
 
     private bool _isDead = false;
 
-    public void TakeDamage(float amount, Vector3 hitPoint, Vector3 hitNormal)
+    private bool _wasHeadshot = false;
+
+    public void TakeDamage(float amount, Vector3 hitPoint, Vector3 hitNormal, bool isHeadshot = false)
     {
         // Evitar múltiples llamadas de daño en enemigos ya muertos
         if (invulnerable || _current <= 0f || _isDead)
@@ -44,6 +46,10 @@ public class Health : MonoBehaviour, IDamageable
 
         _current -= amount;
         OnDamage?.Invoke(amount);
+        
+        // Recordar si fue headshot para el evento EnemyKilled
+        if (isHeadshot)
+            _wasHeadshot = true;
 
         if (_current <= 0f)
         {
@@ -56,6 +62,9 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        // Notificar que un enemigo murió (pasar si fue headshot)
+        GameEvents.EnemyKilled?.Invoke(_wasHeadshot);
+        
         // Reproducir sonido de muerte
         if (SoundManager.Instance != null)
         {
