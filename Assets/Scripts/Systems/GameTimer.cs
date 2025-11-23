@@ -10,10 +10,12 @@ public class GameTimer : MonoBehaviour
 
     public bool running = true;
     private float _timeLeft;
+    private int _lastSecond = -1; // Para detectar cambio de segundo
 
     void OnEnable()
     {
         _timeLeft = startSeconds;
+        _lastSecond = Mathf.FloorToInt(_timeLeft);
         GameEvents.TimerChanged?.Invoke(_timeLeft);
         GameEvents.EnemyKilled += OnEnemyKilled;
     }
@@ -30,6 +32,19 @@ public class GameTimer : MonoBehaviour
         _timeLeft -= Time.deltaTime;
         if (_timeLeft < 0f)
             _timeLeft = 0f;
+        
+        // Detectar cuando baja un segundo para reproducir sonido
+        int currentSecond = Mathf.FloorToInt(_timeLeft);
+        if (currentSecond < _lastSecond)
+        {
+            _lastSecond = currentSecond;
+            // Reproducir tick del timer
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlayTimerTick();
+            }
+        }
+        
         GameEvents.TimerChanged?.Invoke(_timeLeft);
 
         if (_timeLeft <= 0f)

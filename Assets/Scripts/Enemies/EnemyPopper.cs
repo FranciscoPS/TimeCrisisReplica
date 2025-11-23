@@ -84,8 +84,8 @@ public class EnemyPopper : MonoBehaviour
 
         // Estado inicial: oculto y clavado en hidden
         SnapToPose(hiddenPose);
-        // Agregar offset aleatorio al inicio para desincronizar enemigos
-        float initialWait = RandomRange(coverWaitRange) + Random.Range(0f, 1.5f);
+        // Agregar offset aleatorio GRANDE al inicio para desincronizar enemigos cuando spawnean
+        float initialWait = RandomRange(coverWaitRange) + Random.Range(0.5f, 3.5f);
         SetState(State.Hidden, initialWait);
     }
 
@@ -258,6 +258,12 @@ public class EnemyPopper : MonoBehaviour
     private void FireOneShot()
     {
         if (!muzzlePoint) return;
+
+        // Reproducir sonido de disparo enemigo
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayEnemyShoot();
+        }
 
         // Buscar al jugador
         GameObject player = GameObject.FindGameObjectWithTag("Player");

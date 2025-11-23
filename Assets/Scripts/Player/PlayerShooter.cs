@@ -213,6 +213,13 @@ public class PlayerShooter : MonoBehaviour
         _nextShootTime = Time.time + (1f / fireRate);
         _currentAmmo--;
         GameEvents.AmmoChanged?.Invoke(_currentAmmo, magazineSize);
+        
+        // Reproducir sonido de disparo del jugador
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayPlayerShoot();
+        }
+        
         if (_currentAmmo <= 0)
         {
             GameEvents.ReloadAlert?.Invoke(true); // Mostrar "Reload!"
@@ -262,6 +269,12 @@ public class PlayerShooter : MonoBehaviour
         _isReloading = true;
         GameEvents.ReloadAlert?.Invoke(false); // Ocultar "Reload!"
         GameEvents.ReloadingStatus?.Invoke(true); // Mostrar "Reloading..."
+
+        // Reproducir sonido de recarga
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayReload();
+        }
 
         Debug.Log("[PlayerShooter] Recargando...");
         yield return new WaitForSeconds(reloadTime);

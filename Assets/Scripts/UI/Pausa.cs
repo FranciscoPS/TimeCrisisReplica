@@ -36,6 +36,19 @@ public class Pausa : MonoBehaviour
         canvasPausa.interactable = pausa;
         canvasPausa.blocksRaycasts = pausa;
 
+        // Atenuar o restaurar la música según el estado de pausa
+        if (SoundManager.Instance != null)
+        {
+            if (pausa)
+            {
+                SoundManager.Instance.DuckMusic(0.3f); // Reducir a 30% del volumen
+            }
+            else
+            {
+                SoundManager.Instance.RestoreMusic(); // Restaurar volumen original
+            }
+        }
+
         pauseTween = canvasPausa.DOFade(canvasAlpha, TWEEN_TIME).SetUpdate(true);
         gamePaused = pausa;
     }

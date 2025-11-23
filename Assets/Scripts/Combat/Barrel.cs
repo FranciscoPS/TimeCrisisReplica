@@ -38,6 +38,12 @@ public class Barrel : MonoBehaviour
     {
         Vector3 explosionCenter = transform.position;
         
+        // Reproducir sonido de explosión
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayExplosion();
+        }
+        
         // Buscar todos los colliders en el radio de explosión
         Collider[] hitColliders = Physics.OverlapSphere(explosionCenter, explosionRadius, damageableLayers);
         
