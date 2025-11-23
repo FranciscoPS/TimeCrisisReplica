@@ -7688,12 +7688,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Shoot - Left Click
+  m_text: 'Shoot => Left Click
 
-    Cover(reloads automatically) - Space
+    Cover(reloads automatically) => Space
 
     Headshot
-    - +20 seg'
+    => +20 seg'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -12769,6 +12769,10 @@ PrefabInstance:
     - target: {fileID: 6055582062764154861, guid: 74191765661b18d49becdf3aab1144d5, type: 3}
       propertyPath: m_LocalPosition.y
       value: 2.477
+      objectReference: {fileID: 0}
+    - target: {fileID: 7087115701217166991, guid: 74191765661b18d49becdf3aab1144d5, type: 3}
+      propertyPath: parentHealth
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8201999686895065762, guid: 74191765661b18d49becdf3aab1144d5, type: 3}
       propertyPath: m_LocalPosition.x
