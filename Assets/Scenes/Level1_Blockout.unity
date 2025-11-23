@@ -1471,7 +1471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efca89a8721c73142938471c69c0e257, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 8
+  maxHealth: 5
   invulnerable: 0
   rootToDestroy: {fileID: 0}
   deathDestroyDelay: 0
@@ -1493,7 +1493,7 @@ MonoBehaviour:
   raycastMask:
     serializedVersion: 2
     m_Bits: 448
-  magazineSize: 12
+  magazineSize: 8
   fireRate: 6
   damagePerShot: 34
   maxRange: 150
