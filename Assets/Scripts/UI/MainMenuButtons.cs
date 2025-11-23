@@ -33,6 +33,9 @@ public class MainMenuButtons : MonoBehaviour
 
     public void IniciarPartida()
     {
+        // Reproducir sonido de disparo al hacer click
+        PlayButtonSound();
+        
         // Verificar que el fadePanel esté asignado
         if (fadePanel != null)
         {
@@ -42,18 +45,24 @@ public class MainMenuButtons : MonoBehaviour
             // Fade out y cargar escena
             fadePanel.DOFade(1f, fadeDuration).OnComplete(() =>
             {
+                // Detener el MenuAudioManager antes de cambiar de escena
+                StopMenuAudio();
                 SceneManager.LoadScene(gameplayScene);
             });
         }
         else
         {
             // Fallback sin transición
+            StopMenuAudio();
             SceneManager.LoadScene(gameplayScene);
         }
     }
 
     public void ExitGame()
     {
+        // Reproducir sonido de disparo al hacer click
+        PlayButtonSound();
+        
         if (fadePanel != null)
         {
             // Desactivar botones
@@ -90,6 +99,34 @@ public class MainMenuButtons : MonoBehaviour
         foreach (Button button in buttons)
         {
             button.interactable = interactable;
+        }
+    }
+    
+    private void PlayButtonSound()
+    {
+        // Intentar usar el SoundManager si existe
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayPlayerShoot();
+        }
+        // Si no, buscar el MenuAudioManager
+        else
+        {
+            MenuAudioManager menuAudio = FindAnyObjectByType<MenuAudioManager>();
+            if (menuAudio != null)
+            {
+                menuAudio.PlayButtonClick();
+            }
+        }
+    }
+    
+    private void StopMenuAudio()
+    {
+        // Detener la música del menú antes de cambiar de escena
+        MenuAudioManager menuAudio = FindAnyObjectByType<MenuAudioManager>();
+        if (menuAudio != null)
+        {
+            menuAudio.StopMusic();
         }
     }
 }
