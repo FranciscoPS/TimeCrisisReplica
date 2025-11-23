@@ -41,6 +41,7 @@ public class PlayerShooter : MonoBehaviour
     private float _lastCoverToggle;
     private Health _health;
     private bool _isGameOver;
+    private bool _isTravelling; // true cuando está viajando entre zonas
 
     void Awake()
     {
@@ -102,6 +103,7 @@ public class PlayerShooter : MonoBehaviour
         }
 
         GameEvents.GameOver += OnGameOver;
+        GameEvents.TravellingBetweenZones += OnTravellingChanged;
     }
 
     void OnDisable()
@@ -131,6 +133,7 @@ public class PlayerShooter : MonoBehaviour
         }
 
         GameEvents.GameOver -= OnGameOver;
+        GameEvents.TravellingBetweenZones -= OnTravellingChanged;
     }
 
     void OnDestroy()
@@ -153,6 +156,17 @@ public class PlayerShooter : MonoBehaviour
         }
         Debug.Log("[PlayerShooter] GAME OVER");
     }
+    
+    private void OnTravellingChanged(bool travelling)
+    {
+        _isTravelling = travelling;
+        
+        // Si empieza a viajar y está en cobertura, forzar salida
+        if (travelling && isInCover)
+        {
+            isInCover = false;
+        }
+    }
 
     // ───────────── Input callbacks ─────────────
 
@@ -173,7 +187,8 @@ public class PlayerShooter : MonoBehaviour
 
     private void OnReloadPerformed(InputAction.CallbackContext ctx)
     {
-        if (!_isReloading && _currentAmmo < magazineSize && !_isGameOver)
+        // Bloquear recarga si está viajando entre zonas
+        if (!_isReloading && _currentAmmo < magazineSize && !_isGameOver && !_isTravelling)
             StartCoroutine(ReloadRoutine());
     }
 
@@ -181,7 +196,8 @@ public class PlayerShooter : MonoBehaviour
 
     private void SetCover(bool cover)
     {
-        if (Time.time - _lastCoverToggle < coverDebounce || _isGameOver)
+        // Bloquear cobertura si está viajando entre zonas
+        if (Time.time - _lastCoverToggle < coverDebounce || _isGameOver || _isTravelling)
             return;
         _lastCoverToggle = Time.time;
 
@@ -195,9 +211,10 @@ public class PlayerShooter : MonoBehaviour
         }
     }
 
-    private void TryShoot()
+    void TryShoot()
     {
-        if (isInCover || _isReloading || _isGameOver)
+        // Bloquear disparo si está en cobertura, recargando, game over o viajando
+        if (isInCover || _isReloading || _isGameOver || _isTravelling)
         {
             return;
         }
@@ -213,6 +230,13 @@ public class PlayerShooter : MonoBehaviour
         _nextShootTime = Time.time + (1f / fireRate);
         _currentAmmo--;
         GameEvents.AmmoChanged?.Invoke(_currentAmmo, magazineSize);
+        
+        // Reproducir sonido de disparo del jugador
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayPlayerShoot();
+        }
+        
         if (_currentAmmo <= 0)
         {
             GameEvents.ReloadAlert?.Invoke(true); // Mostrar "Reload!"
@@ -225,18 +249,55 @@ public class PlayerShooter : MonoBehaviour
         // Línea de ayuda en Scene view (requiere Gizmos ON)
         Debug.DrawLine(ray.origin, ray.origin + ray.direction * maxRange, Color.yellow, 0.15f);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, maxRange, raycastMask))
+        // Usar RaycastAll para detectar TODOS los colliders en el rayo (para priorizar headshots)
+        RaycastHit[] hits = Physics.RaycastAll(ray, maxRange, raycastMask);
+        
+        if (hits.Length > 0)
         {
-            // Tracer visible en Game view (hasta el impacto)
+            // Ordenar hits por distancia (más cercano primero)
+            System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+            
+            RaycastHit primaryHit = hits[0];
+            
+            // Tracer visible en Game view (hasta el impacto más cercano)
             if (drawTracerInGame)
-                DrawTracer(ray.origin, hit.point, tracerColorHit);
+                DrawTracer(ray.origin, primaryHit.point, tracerColorHit);
 
-            if (hit.collider.TryGetComponent<IDamageable>(out var dmg))
+            // Verificar si el disparo impactó directamente el layer "Cover" (escudo)
+            if (primaryHit.collider.gameObject.layer == LayerMask.NameToLayer("Cover"))
             {
-                dmg.TakeDamage(damagePerShot, hit.point, hit.normal);
+                // El escudo bloquea el disparo - no hacer daño
+                return;
             }
 
-            if (hit.collider.TryGetComponent<Barrel>(out var barrel))
+            // Buscar si alguno de los hits es headshot
+            bool isHeadshot = false;
+            HeadshotDetector headshotDetector = null;
+            
+            foreach (var hit in hits)
+            {
+                var detector = hit.collider.GetComponent<HeadshotDetector>();
+                if (detector != null)
+                {
+                    isHeadshot = true;
+                    headshotDetector = detector;
+                    break;
+                }
+            }
+            
+            // Si fue headshot, aplicar daño al parentHealth
+            if (isHeadshot && headshotDetector != null && headshotDetector.parentHealth != null)
+            {
+                headshotDetector.parentHealth.TakeDamage(damagePerShot, primaryHit.point, primaryHit.normal, true);
+            }
+            // Si no fue headshot, buscar IDamageable en el primer hit
+            else if (primaryHit.collider.TryGetComponent<IDamageable>(out var dmg))
+            {
+                dmg.TakeDamage(damagePerShot, primaryHit.point, primaryHit.normal, false);
+            }
+
+            // Verificar barril
+            if (primaryHit.collider.TryGetComponent<Barrel>(out var barrel))
             {
                 barrel.DestroyBarrel();
             }
@@ -254,6 +315,12 @@ public class PlayerShooter : MonoBehaviour
         _isReloading = true;
         GameEvents.ReloadAlert?.Invoke(false); // Ocultar "Reload!"
         GameEvents.ReloadingStatus?.Invoke(true); // Mostrar "Reloading..."
+
+        // Reproducir sonido de recarga
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayReload();
+        }
 
         Debug.Log("[PlayerShooter] Recargando...");
         yield return new WaitForSeconds(reloadTime);

@@ -2,11 +2,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class GameUI : MonoBehaviour
 {
     [Header("Timer")]
     public TMP_Text timerText;              // arrastra un TMP_Text (mm:ss)
+    public TMP_Text timeAddedText;          // texto para mostrar "+20s" cuando se agrega tiempo
+    
+    private float _lastTimerValue;
 
     [Header("Ammo")]
     public Transform ammoContainer;         // un GameObject con HorizontalLayoutGroup
@@ -28,6 +32,7 @@ public class GameUI : MonoBehaviour
         // Inicializar textos ocultos
         if (reloadText) reloadText.gameObject.SetActive(false);
         if (reloadingText) reloadingText.gameObject.SetActive(false);
+        if (timeAddedText) timeAddedText.gameObject.SetActive(false);
     }
 
     void OnEnable()
@@ -52,9 +57,50 @@ public class GameUI : MonoBehaviour
     // --- Timer ---
     void OnTimerChanged(float seconds)
     {
+        // Detectar si se agregó tiempo (valor aumenta en vez de disminuir)
+        if (_lastTimerValue > 0 && seconds > _lastTimerValue)
+        {
+            float timeAdded = seconds - _lastTimerValue;
+            ShowTimeAddedFeedback(timeAdded);
+        }
+        
+        _lastTimerValue = seconds;
+        
         int m = Mathf.FloorToInt(seconds / 60f);
         int s = Mathf.FloorToInt(seconds % 60f);
         if (timerText) timerText.text = $"{m:00}:{s:00}";
+    }
+    
+    void ShowTimeAddedFeedback(float timeAdded)
+    {
+        if (!timeAddedText) return;
+        
+        // Configurar el texto
+        timeAddedText.text = $"+{Mathf.RoundToInt(timeAdded)}s";
+        timeAddedText.color = new Color(0f, 1f, 0f, 1f); // Verde brillante
+        timeAddedText.gameObject.SetActive(true);
+        
+        // Animación: Escala + Fade out + Mover hacia arriba
+        timeAddedText.transform.localScale = Vector3.zero;
+        timeAddedText.transform.DOScale(1.2f, 0.3f).SetEase(Ease.OutBack);
+        
+        // Fade out después de un momento
+        DOVirtual.DelayedCall(1.5f, () =>
+        {
+            if (timeAddedText)
+            {
+                timeAddedText.DOFade(0f, 0.5f).OnComplete(() =>
+                {
+                    if (timeAddedText) timeAddedText.gameObject.SetActive(false);
+                });
+            }
+        });
+        
+        // Animar el timer principal con un "bounce"
+        if (timerText)
+        {
+            timerText.transform.DOPunchScale(Vector3.one * 0.2f, 0.5f, 5, 0.5f);
+        }
     }
 
     // --- Ammo ---

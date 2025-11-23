@@ -24,6 +24,8 @@ public class EnemyDeathAddTime : MonoBehaviour
 
     void HandleDeath()
     {
-        GameEvents.EnemyKilled?.Invoke(); // GameTimer sumará +20s
+        // NOTA: Este script es redundante ya que Health.Die() dispara EnemyKilled
+        // Comentado para evitar doble invocación
+        // GameEvents.EnemyKilled?.Invoke(false);
     }
 }
