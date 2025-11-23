@@ -231,6 +231,14 @@ public class PlayerShooter : MonoBehaviour
             if (drawTracerInGame)
                 DrawTracer(ray.origin, hit.point, tracerColorHit);
 
+            // Verificar si el disparo impactó directamente el layer "Cover" (escudo)
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Cover"))
+            {
+                // El escudo bloquea el disparo - no hacer daño
+                return;
+            }
+
+            // Si impactó un enemigo, verificar si hay daño
             if (hit.collider.TryGetComponent<IDamageable>(out var dmg))
             {
                 dmg.TakeDamage(damagePerShot, hit.point, hit.normal);

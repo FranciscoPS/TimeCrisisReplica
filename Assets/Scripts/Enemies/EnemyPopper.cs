@@ -11,8 +11,8 @@ public class EnemyPopper : MonoBehaviour
     public Transform popOutPose;     // Dónde se asoma
 
     [Header("Tiempos aleatorios (segundos)")]
-    public Vector2 coverWaitRange = new Vector2(0.7f, 1.2f);
-    public Vector2 exposeWaitRange = new Vector2(0.6f, 1.0f);
+    public Vector2 coverWaitRange = new Vector2(0.5f, 2.5f);  // Mayor variación para evitar sincronización
+    public Vector2 exposeWaitRange = new Vector2(0.8f, 1.8f); // Mayor variación en tiempo expuesto
 
     [Header("Duración del movimiento (segundos)")]
     public float popOutMoveTime = 0.22f;
@@ -84,7 +84,9 @@ public class EnemyPopper : MonoBehaviour
 
         // Estado inicial: oculto y clavado en hidden
         SnapToPose(hiddenPose);
-        SetState(State.Hidden, RandomRange(coverWaitRange));
+        // Agregar offset aleatorio al inicio para desincronizar enemigos
+        float initialWait = RandomRange(coverWaitRange) + Random.Range(0f, 1.5f);
+        SetState(State.Hidden, initialWait);
     }
 
     void Update()
