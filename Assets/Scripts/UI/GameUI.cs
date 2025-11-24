@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using DG.Tweening;
+using static UnityEditor.ShaderData;
 
 public class GameUI : MonoBehaviour
 {
@@ -27,12 +28,23 @@ public class GameUI : MonoBehaviour
     public TMP_Text reloadText;             // "RELOAD!" cuando sin balas
     public TMP_Text reloadingText;          // "Reloading..." durante recarga
 
+    [Header("GameOver")]
+    public CanvasGroup GameOverGroup;
+    private bool gameOver;
+    private const float TWEEN_TIME = 0.3f;
+    private Tween overTween;
+
     void Start()
     {
         // Inicializar textos ocultos
         if (reloadText) reloadText.gameObject.SetActive(false);
         if (reloadingText) reloadingText.gameObject.SetActive(false);
         if (timeAddedText) timeAddedText.gameObject.SetActive(false);
+        // GameOver
+        gameOver = false;
+        GameOverGroup.alpha = 0f;
+        GameOverGroup.interactable = false;
+        GameOverGroup.blocksRaycasts = false;
     }
 
     void OnEnable()
@@ -169,9 +181,15 @@ public class GameUI : MonoBehaviour
 
     void OnGameOver()
     {
-        if (reloadText) reloadText.text = "GAME OVER";
-        if (reloadText) reloadText.gameObject.SetActive(true);
-        if (reloadingText) reloadingText.gameObject.SetActive(false);
-        // Aquí podrías pausar, etc.
+        Time.timeScale = 0;
+
+        GameOverGroup.alpha = 1f;
+
+        overTween?.Kill();
+        GameOverGroup.interactable = true;
+        GameOverGroup.blocksRaycasts = true;
+
+        overTween = GameOverGroup.DOFade(1f, TWEEN_TIME).SetUpdate(true);
+        gameOver = true;
     }
 }
