@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Sistema centralizado de audio para el juego.
@@ -69,12 +70,43 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        // Suscribirse a eventos de cambio de escena
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        // Desuscribirse de eventos de cambio de escena
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     void Start()
     {
-        // Reproducir música de fondo automáticamente
-        if (backgroundMusic != null)
+        // Verificar la escena actual y reproducir música si es apropiado
+        string currentScene = SceneManager.GetActiveScene().name;
+        
+        // Iniciar música si NO es MainMenu (incluye cutscene y gameplay)
+        if (currentScene != "MainMenu" && backgroundMusic != null)
         {
             PlayBackgroundMusic();
+        }
+    }
+
+    /// <summary>
+    /// Llamado cuando se carga una nueva escena
+    /// </summary>
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Si la escena NO es MainMenu (incluye cutscene y gameplay), iniciar música
+        if (scene.name != "MainMenu" && backgroundMusic != null)
+        {
+            // Solo reiniciar si la música no está sonando
+            if (!_musicSource.isPlaying)
+            {
+                PlayBackgroundMusic();
+            }
         }
     }
 
@@ -197,6 +229,21 @@ public class SoundManager : MonoBehaviour
         if (_musicSource != null)
         {
             _musicSource.volume = _originalMusicVolume;
+        }
+    }
+    
+    /// <summary>
+    /// Reinicia la música desde el principio
+    /// </summary>
+    public void RestartMusic()
+    {
+        if (_musicSource != null && backgroundMusic != null)
+        {
+            _musicSource.Stop();
+            _musicSource.clip = backgroundMusic;
+            _musicSource.volume = musicVolume;
+            _originalMusicVolume = musicVolume;
+            _musicSource.Play();
         }
     }
 

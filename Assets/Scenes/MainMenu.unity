@@ -528,6 +528,7 @@ GameObject:
   - component: {fileID: 818741481}
   - component: {fileID: 818741480}
   - component: {fileID: 818741479}
+  - component: {fileID: 818741482}
   m_Layer: 5
   m_Name: Iniciar Partida
   m_TagString: Untagged
@@ -649,6 +650,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 818741477}
   m_CullTransparentMesh: 1
+--- !u!114 &818741482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818741477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d0597ada124d094aa4040c1fa75a485, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverScale: 1.1
+  hoverDuration: 0.2
+  hoverOpacity: 0.8
+  playClickSound: 1
 --- !u!1 &989042584
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,6 +678,7 @@ GameObject:
   - component: {fileID: 989042588}
   - component: {fileID: 989042587}
   - component: {fileID: 989042586}
+  - component: {fileID: 989042589}
   m_Layer: 5
   m_Name: Salir
   m_TagString: Untagged
@@ -782,6 +800,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 989042584}
   m_CullTransparentMesh: 1
+--- !u!114 &989042589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 989042584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d0597ada124d094aa4040c1fa75a485, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverScale: 1.1
+  hoverDuration: 0.2
+  hoverOpacity: 0.8
+  playClickSound: 1
 --- !u!1 &1067752179
 GameObject:
   m_ObjectHideFlags: 0

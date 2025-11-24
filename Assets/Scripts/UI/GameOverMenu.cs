@@ -1,12 +1,14 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MenuPausa : MonoBehaviour
+/// <summary>
+/// Maneja los botones del menú de Game Over
+/// </summary>
+public class GameOverMenu : MonoBehaviour
 {
-    public Pausa pausaScript;
     private bool _isTransitioning = false;
-    
-    public void RegresarAMenu()
+
+    public void RestartGame()
     {
         if (_isTransitioning)
             return;
@@ -19,13 +21,34 @@ public class MenuPausa : MonoBehaviour
             SoundManager.Instance.StopBackgroundMusic();
         }
         
-        if (pausaScript != null)
+        // Usar fade y transición
+        GameplayFadeManager.DoFadeToBlack(() =>
         {
-            pausaScript.TogglePause(false);
-        }
-        else
+            // Restaurar timeScale antes de cambiar de escena
+            Time.timeScale = 1f;
+            
+            if (SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.RestartCurrentScene();
+            }
+            else
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        });
+    }
+
+    public void ReturnToMainMenu()
+    {
+        if (_isTransitioning)
+            return;
+            
+        _isTransitioning = true;
+        
+        // Detener música del juego
+        if (SoundManager.Instance != null)
         {
-            Debug.LogError("[MenuPausa] pausaScript no asignado!");
+            SoundManager.Instance.StopBackgroundMusic();
         }
         
         // Usar fade y transición
@@ -43,56 +66,5 @@ public class MenuPausa : MonoBehaviour
                 SceneManager.LoadScene("MainMenu");
             }
         });
-    }
-
-    public void ReiniciarPartida()
-    {
-        if (_isTransitioning)
-            return;
-            
-        _isTransitioning = true;
-        
-        // Detener música actual para que se reinicie
-        if (SoundManager.Instance != null)
-        {
-            SoundManager.Instance.StopBackgroundMusic();
-        }
-        
-        if (pausaScript != null)
-        {
-            pausaScript.TogglePause(false);
-        }
-        else
-        {
-            Debug.LogError("[MenuPausa] pausaScript no asignado!");
-        }
-        
-        // Usar fade y transición
-        GameplayFadeManager.DoFadeToBlack(() =>
-        {
-            // Restaurar timeScale antes de cambiar de escena
-            Time.timeScale = 1f;
-            
-            if (SceneTransitionManager.Instance != null)
-            {
-                SceneTransitionManager.Instance.RestartCurrentScene();
-            }
-            else
-            {
-                SceneManager.LoadScene("Level1_Blockout");
-            }
-        });
-    }
-
-    public void RegresarAJuego()
-    {
-        if (pausaScript != null)
-        {
-            pausaScript.TogglePause(false);
-        }
-        else
-        {
-            Debug.LogError("[MenuPausa] pausaScript no asignado!");
-        }
     }
 }
