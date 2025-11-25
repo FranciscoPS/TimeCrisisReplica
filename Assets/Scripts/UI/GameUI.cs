@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using DG.Tweening;
-using static UnityEditor.ShaderData;
 
 public class GameUI : MonoBehaviour
 {
