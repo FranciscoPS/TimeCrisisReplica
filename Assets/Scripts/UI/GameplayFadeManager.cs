@@ -41,15 +41,24 @@ public class GameplayFadeManager : MonoBehaviour
     {
         if (fadePanel != null)
         {
-            fadePanel.raycastTarget = false; // Asegurar que no bloquee clicks
-            fadePanel.DOFade(1f, fadeDuration).OnComplete(() =>
-            {
-                onComplete?.Invoke();
-            });
+            // PAUSAR EL JUEGO INMEDIATAMENTE
+            Time.timeScale = 0f;
+            
+            // Bloquear raycast para prevenir clicks durante transición
+            fadePanel.raycastTarget = true;
+            
+            // Usar SetUpdate(true) para que funcione durante pausa
+            fadePanel.DOFade(1f, fadeDuration)
+                .SetUpdate(true) // Funciona con Time.timeScale = 0
+                .OnComplete(() =>
+                {
+                    onComplete?.Invoke();
+                });
         }
         else
         {
             Debug.LogWarning("[GameplayFadeManager] FadePanel no asignado");
+            Time.timeScale = 0f; // Pausar de todas formas
             onComplete?.Invoke();
         }
     }
@@ -58,11 +67,14 @@ public class GameplayFadeManager : MonoBehaviour
     {
         if (fadePanel != null)
         {
-            fadePanel.raycastTarget = false; // Asegurar que no bloquee clicks
-            fadePanel.DOFade(0f, fadeDuration).OnComplete(() =>
-            {
-                onComplete?.Invoke();
-            });
+            fadePanel.raycastTarget = false; // No bloquear clicks después del fade
+            
+            fadePanel.DOFade(0f, fadeDuration)
+                .SetUpdate(true) // Funciona con Time.timeScale = 0
+                .OnComplete(() =>
+                {
+                    onComplete?.Invoke();
+                });
         }
         else
         {

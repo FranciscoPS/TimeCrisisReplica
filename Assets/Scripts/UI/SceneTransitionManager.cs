@@ -83,6 +83,12 @@ public class SceneTransitionManager : MonoBehaviour
 
     public void RestartCurrentScene()
     {
+        // Detener música antes de reiniciar
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.StopBackgroundMusic();
+        }
+        
         string currentScene = SceneManager.GetActiveScene().name;
         TransitionToScene(currentScene);
     }

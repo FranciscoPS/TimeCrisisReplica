@@ -1385,6 +1385,60 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &1288913178
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1288913180}
+  - component: {fileID: 1288913179}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1288913179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288913178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be0961266f7b23b48839c7035b9f7ed5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundMusic: {fileID: 8300000, guid: 527e7c01a86e2794e9a7a9e2baedd685, type: 3}
+  playerShootSFX: {fileID: 8300000, guid: 6a573191cc2f84c4cbee613fe92f10d0, type: 3}
+  enemyShootSFX: {fileID: 8300000, guid: 90de6643e3702a346ab4dcfaee73a1cd, type: 3}
+  explosionSFX: {fileID: 8300000, guid: 51f0998c96cb1fd43851a97421ed2987, type: 3}
+  timerTickSFX: {fileID: 8300000, guid: bda43de6c7aa95d4da4ab0e121a9404c, type: 3}
+  reloadSFX: {fileID: 8300000, guid: 491c3e7c301c0504ea5f76ac1475788f, type: 3}
+  enemyDeathSFX: {fileID: 8300000, guid: 9d0e2884fedcded4ab9fa1d9275f648f, type: 3}
+  timeAddedSFX: {fileID: 8300000, guid: 62b0152ceaed4f7428cc58b5810d9b3a, type: 3}
+  musicVolume: 0.5
+  sfxVolume: 1
+--- !u!4 &1288913180
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288913178}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.232324, y: 7.663371, z: 47.607037}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1361541628
 GameObject:
   m_ObjectHideFlags: 0
@@ -1894,3 +1948,4 @@ SceneRoots:
   - {fileID: 611578752}
   - {fileID: 960939838}
   - {fileID: 1179470430}
+  - {fileID: 1288913180}
