@@ -2015,7 +2015,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 5
-  invulnerable: 0
+  invulnerable: 1
   rootToDestroy: {fileID: 0}
   deathDestroyDelay: 0
   toDisableOnDeath: []
@@ -2036,7 +2036,7 @@ MonoBehaviour:
   raycastMask:
     serializedVersion: 2
     m_Bits: 448
-  magazineSize: 8
+  magazineSize: 50
   fireRate: 6
   damagePerShot: 34
   maxRange: 150

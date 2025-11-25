@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Unity.Cinemachine;
 
 public class ZoneFlowController : MonoBehaviour
@@ -96,10 +97,46 @@ public class ZoneFlowController : MonoBehaviour
         if (next >= zones.Count)
         {
             Debug.Log("[ZoneFlow] ¡Todas las zonas completadas!");
+            StartCoroutine(TransitionToLevelClear());
             return;
         }
 
         StartCoroutine(TravelToZone(next));
+    }
+    
+    /// <summary>
+    /// Transición a la escena Level Clear cuando se completan todas las zonas
+    /// </summary>
+    IEnumerator TransitionToLevelClear()
+    {
+        // Detener música de gameplay
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.StopBackgroundMusic();
+        }
+        
+        // Pausar el juego
+        Time.timeScale = 0f;
+        
+        // Esperar un momento (opcional, puedes ajustar o quitar)
+        yield return new WaitForSecondsRealtime(1f);
+        
+        // Hacer fade y cambiar de escena
+        GameplayFadeManager.DoFadeToBlack(() =>
+        {
+            // Restaurar timeScale
+            Time.timeScale = 1f;
+            
+            // Cargar Level Clear
+            if (SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.TransitionToScene("Level Clear");
+            }
+            else
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Level Clear");
+            }
+        });
     }
 
     IEnumerator TravelToZone(int nextIndex)

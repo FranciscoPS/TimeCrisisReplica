@@ -87,8 +87,8 @@ public class SoundManager : MonoBehaviour
         // Verificar la escena actual y reproducir música si es apropiado
         string currentScene = SceneManager.GetActiveScene().name;
         
-        // Iniciar música si NO es MainMenu (incluye cutscene y gameplay)
-        if (currentScene != "MainMenu" && backgroundMusic != null)
+        // Iniciar música solo en escenas de gameplay (no en MainMenu ni Level Clear)
+        if (IsGameplayScene(currentScene) && backgroundMusic != null)
         {
             PlayBackgroundMusic();
         }
@@ -99,8 +99,8 @@ public class SoundManager : MonoBehaviour
     /// </summary>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Si la escena NO es MainMenu (incluye cutscene y gameplay), iniciar música
-        if (scene.name != "MainMenu" && backgroundMusic != null)
+        // Solo reproducir música en escenas de gameplay
+        if (IsGameplayScene(scene.name) && backgroundMusic != null)
         {
             // Solo reiniciar si la música no está sonando
             if (!_musicSource.isPlaying)
@@ -108,6 +108,15 @@ public class SoundManager : MonoBehaviour
                 PlayBackgroundMusic();
             }
         }
+    }
+    
+    /// <summary>
+    /// Verifica si una escena es de gameplay (no menú)
+    /// </summary>
+    private bool IsGameplayScene(string sceneName)
+    {
+        // Excluir MainMenu y Level Clear (usan MenuAudioManager)
+        return sceneName != "MainMenu" && sceneName != "Level Clear";
     }
 
     /// <summary>

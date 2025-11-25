@@ -907,6 +907,7 @@ GameObject:
   - component: {fileID: 1127148044}
   - component: {fileID: 1127148043}
   - component: {fileID: 1127148042}
+  - component: {fileID: 1127148045}
   m_Layer: 5
   m_Name: Volver a Jugar
   m_TagString: Untagged
@@ -1028,6 +1029,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1127148040}
   m_CullTransparentMesh: 1
+--- !u!114 &1127148045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1127148040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d0597ada124d094aa4040c1fa75a485, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverScale: 1.1
+  hoverDuration: 0.2
+  hoverOpacity: 0.8
+  playClickSound: 1
 --- !u!1 &1319073509
 GameObject:
   m_ObjectHideFlags: 0
@@ -1164,6 +1181,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1319073509}
   m_CullTransparentMesh: 1
+--- !u!1 &1554329391
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1554329393}
+  - component: {fileID: 1554329392}
+  m_Layer: 0
+  m_Name: MenuAudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1554329392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554329391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 006696caded6e764bbd4511d970c3912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuMusic: {fileID: 8300000, guid: 44e1a895b644eaf448575e29bfa7352b, type: 3}
+  volume: 0.5
+  buttonHoverSFX: {fileID: 8300000, guid: 90de6643e3702a346ab4dcfaee73a1cd, type: 3}
+  buttonClickSFX: {fileID: 8300000, guid: 90de6643e3702a346ab4dcfaee73a1cd, type: 3}
+--- !u!4 &1554329393
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554329391}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1045.0756, y: 806.58417, z: -1.6163645}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1579192792
 GameObject:
   m_ObjectHideFlags: 0
@@ -1176,6 +1241,7 @@ GameObject:
   - component: {fileID: 1579192796}
   - component: {fileID: 1579192795}
   - component: {fileID: 1579192794}
+  - component: {fileID: 1579192797}
   m_Layer: 5
   m_Name: Regresar a Menu Principal
   m_TagString: Untagged
@@ -1297,6 +1363,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1579192792}
   m_CullTransparentMesh: 1
+--- !u!114 &1579192797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1579192792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d0597ada124d094aa4040c1fa75a485, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverScale: 1.1
+  hoverDuration: 0.2
+  hoverOpacity: 0.8
+  playClickSound: 1
 --- !u!1 &1767231236
 GameObject:
   m_ObjectHideFlags: 0
@@ -1654,3 +1736,4 @@ SceneRoots:
   - {fileID: 84447787}
   - {fileID: 819077733}
   - {fileID: 673313790}
+  - {fileID: 1554329393}
